@@ -1,0 +1,33 @@
+{
+    "foam.placeholders.exclude": [
+        
+    ],
+    "git.confirmSync": false,
+    "bracket-pair-colorizer-2.depreciation-notice": false,
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "chatgpt.authenticationType": "Google Authentication",
+    "chatgpt.emailAddress": "serverninja@gmail.com",
+    "chatgpt.method": "Browser Auto-login",
+    "editor.inlayHints.enabled": "offUnlessPressed",
+    "editor.fontFamily": "Fira Code Retina, Hack Nerd Font, Monospace",
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "python.defaultInterpreterPath": "/opt/homebrew/bin/python3.11",
+    "terminal.integrated.enableMultiLinePasteWarning": false,
+    "git.openRepositoryInParentFolders": "never",
+    "terminal.integrated.copyOnSelection": true,
+    "terminal.integrated.rightClickBehavior": "default",
+    "terminal.integrated.cursorBlinking": true,
+    "terminal.integrated.scrollback": 100000,
+    "files.watcherExclude": {
+        "**/.terraform/**": true,
+        "**/manifests/**": true
+    },
+    "openscad.launchPath": "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD",
+    "diffEditor.hideUnchangedRegions.enabled": true,
+    "editor.fontLigatures": true,
+    "workbench.colorTheme": "Cyberpunk"
+}
