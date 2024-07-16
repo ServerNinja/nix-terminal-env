@@ -108,6 +108,23 @@ check_starship_config() {
     fi
 }
 
+create_tmux_symlink() {
+    local tmux_config="$HOME/.tmux.conf"
+    local tmux_repo_config="$BASE_DIR/configs/tmux/.tmux.conf"
+
+    if [ -f "$tmux_config" ]; then
+        if [ ! -L "$tmux_config" ]; then
+            echo "Backing up existing tmux config to $tmux_config.bak"
+            mv "$tmux_config" "$tmux_config.bak"
+        fi
+    fi
+
+    if [ ! -L "$tmux_config" ]; then
+        echo "Creating symlink for tmux config"
+        ln -sf "$tmux_repo_config" "$tmux_config"
+    fi
+}
+
 create_nvim_symlink() {
     local nvim_config="$HOME/.config/nvim"
     local nvim_repo_config="$BASE_DIR/configs/nvim"
@@ -131,6 +148,7 @@ check_commands
 
 # Terminal Config Linking
 link_zsh_files
+create_tmux_symlink
 check_figlet_fonts
 check_starship_config
 
