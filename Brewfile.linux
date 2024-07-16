@@ -1,0 +1,23 @@
+tap "homebrew/bundle"
+
+# Primary needs
+brew "tmux"
+brew "neovim"
+
+# For ZSH
+brew "starship"
+brew "figlet"
+brew "lolcat"
+
+# Dependent Commands / Apps
+brew "go"
+brew "ripgrep"
+brew "node"
+brew "wget"
+brew "curl"
+brew "jq"
+
+# Getting fuzzy....
+brew "fzf"
+
+cask "font-hack-nerd-font"

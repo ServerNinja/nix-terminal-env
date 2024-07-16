@@ -1,2 +1,2 @@
 *.swp
-Brewfile.lock.json
+Brewfile*.lock.json

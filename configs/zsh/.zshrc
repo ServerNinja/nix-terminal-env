@@ -1,3 +1,9 @@
+if [[ "$(uname)" == "Darwin" ]]; then
+  IS_DARWIN="true"
+else
+  IS_DARWIN="false"
+fi
+
 # Editor
 export EDITOR="vi"
 export K9S_EDITOR=vi
@@ -10,7 +16,11 @@ setopt interactivecomments
 alias tf_bypass='export TF_FORCE_LOCAL_BACKEND=1'
 
 # Homebrew
-eval "$(/opt/homebrew/bin/brew shellenv)"
+if [[ "$IS_DARWIN" == "true" ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+else
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" 
+fi
 
 # Linux version of OSX pbcopy and pbpaste.
 alias pbcopy='xsel — clipboard — input'
