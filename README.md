@@ -4,7 +4,7 @@
 
 OS: Linux (debian / ubuntu) Specific:
 ```
-sudo apt-get install zsh wget curl nodejs ncal
+sudo apt-get install build-essential zsh git wget curl nodejs ncal
 
 # Change shell to zsh
 chsh -s $(which zsh)

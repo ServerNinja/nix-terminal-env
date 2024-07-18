@@ -51,7 +51,9 @@ autoload -Uz add-zsh-hook
 setopt prompt_subst
 
 # Add Visual Studio Code (code)
-code () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
+if [[ "$IS_DARWIN" == "true" ]]; then
+    code () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
+fi
 
 # Include bin directory
 export PATH=$PATH:/Users/$(whoami)/bin
