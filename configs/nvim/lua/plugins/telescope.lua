@@ -1,3 +1,4 @@
+-- For searching for files in the project
 return { 
   'nvim-telescope/telescope.nvim',
   tag = '0.1.8',

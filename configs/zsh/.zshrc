@@ -6,6 +6,7 @@ fi
 
 # Editor
 export EDITOR="vi"
+export VISUAL="vi"
 export K9S_EDITOR=vi
 export TERM="xterm-256color"
 
@@ -80,4 +81,24 @@ alias kubectx='kubectl config use-context $(kubectl config get-contexts -o name 
 # Display custom MOTD
 if [ -f ~/.motd ]; then
     . ~/.motd
+fi
+
+# Launching tmux on terminal startup
+SUPPORTED_TMUX_TERMINALS=("iTerm.app" "WezTerm")
+if command -v tmux &> /dev/null; then
+  if [[ "${SUPPORTED_TMUX_TERMINALS[*]}" =~ "$TERM_PROGRAM" ]]; then
+    # Your code for supported terminals here
+
+    # Find detached sessions and attach to the first one in the list
+    OPEN_SESSIONS="$(tmux list-sessions | grep -v "(attached)")"
+    if [ -n "$OPEN_SESSIONS" ]; then
+      SESSION_ID=$(echo "$OPEN_SESSIONS" | awk '{print $1}' | sed -e 's/:$//' | head -n 1)
+      echo "TMUX: Attaching to session: $SESSION_ID"
+      tmux attach-session -t $SESSION_ID
+    else
+      # If no detached sessions are found, create a new one
+      tmux new-session
+    fi
+    unset OPEN_SESSIONS SESSION_ID SUPPORTED_TMUX_TERMINALS
+  fi
 fi

@@ -22,3 +22,4 @@ require("vim-options")
 
 -- Load plugins from lua/plugins.lua
 require("lazy").setup("plugins")
+

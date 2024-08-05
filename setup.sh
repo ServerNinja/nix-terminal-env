@@ -148,9 +148,13 @@ check_commands
 
 # Terminal Config Linking
 link_zsh_files
-create_tmux_symlink
 check_figlet_fonts
 check_starship_config
+
+# Tmux Config Linking
+if command -v tmux &> /dev/null; then
+    create_tmux_symlink
+fi
 
 # Neovim IDE Config Linking
 if command -v nvim &> /dev/null; then

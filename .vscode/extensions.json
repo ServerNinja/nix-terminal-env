@@ -10,6 +10,9 @@
 		"jwsandeman.cyberpunk2077-theme",
 		"carlos18mz.cyberpunk-2077-rebuild",
 
+		// Remote SSH
+		"ms-vscode-remote.remote-ssh",
+
 		// Copilot
 		"github.copilot",
 
@@ -17,6 +20,9 @@
 		"ms-python.python",
 		"python.vscode-pylance",
 		"ms-python.debugpy",
+
+		// Terraform
+		"4ops.terraform",
 
 		// VIM
 		"vscodevim.vim",

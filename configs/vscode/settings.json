@@ -29,5 +29,8 @@
     "openscad.launchPath": "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD",
     "diffEditor.hideUnchangedRegions.enabled": true,
     "editor.fontLigatures": true,
-    "workbench.colorTheme": "Cyberpunk"
+    "workbench.colorTheme": "Dracula Theme",
+    "window.autoDetectColorScheme": true,
+    "workbench.preferredLightColorTheme": "Cute",
+    "workbench.preferredDarkColorTheme": "cyberpunk2077"
 }
