@@ -19,5 +19,3 @@ brew "jq"
 
 # Getting fuzzy....
 brew "fzf"
-
-cask "font-hack-nerd-font"
