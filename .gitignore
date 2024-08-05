@@ -1,2 +1,4 @@
 *.swp
 Brewfile*.lock.json
+
+lazy-lock.json
