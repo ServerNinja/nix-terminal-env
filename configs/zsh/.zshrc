@@ -30,9 +30,13 @@ alias pbpaste='xsel — clipboard — output'
 # Cargo
 source "$HOME/.cargo/env"
 
-docker() {
-    podman "$@"
-}
+
+# Alias docker to podman via function only if podman is installed and docker is not installed
+if command -v podman &> /dev/null && ! command -v docker &> /dev/null; then
+    docker() {
+        podman "$@"
+    }
+fi
 
 # Enable vi mode
 bindkey -v
