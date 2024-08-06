@@ -12,3 +12,9 @@ vim.g.maplocalleader = "\\"
 -- For copilot
 vim.g.copilot_assume_mapped = true
 
+-- Open nvim tree every time
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    require('nvim-tree.api').tree.open()
+  end
+})
