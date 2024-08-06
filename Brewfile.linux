@@ -19,3 +19,6 @@ brew "jq"
 
 # Getting fuzzy....
 brew "fzf"
+
+# lazygit
+brew "lazygit"

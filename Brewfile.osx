@@ -29,3 +29,6 @@ brew "libssh"
 brew "libssh2"
 brew "git"
 cask "font-hack-nerd-font"
+
+# Lazygit
+brew "lazygit"
