@@ -6,6 +6,22 @@ return {
     "nvim-tree/nvim-web-devicons",
   },
   config = function()
-    require("nvim-tree").setup {}
+    -- Toggle nvim-tree focus with <C-n>
+    vim.keymap.set('n', '<C-n>', ':NvimTreeFocus<CR>')
+
+    require("nvim-tree").setup {
+      sort = {
+        sorter = "case_sensitive",
+      },
+      view = {
+        width = 30,
+      },
+      renderer = {
+        group_empty = true,
+      },
+      filters = {
+        dotfiles = true,
+      },
+    }
   end,
 }
