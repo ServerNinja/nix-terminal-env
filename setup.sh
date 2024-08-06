@@ -142,6 +142,22 @@ create_nvim_symlink() {
     fi
 }
 
+create_wezterm_symlink() {
+    local wezterm_config="$HOME/.wezterm.lua"
+    local wezterm_repo_config="$BASE_DIR/configs/wezterm/wezterm.lua"
+
+    if [ -f "$wezterm_config" ]; then
+        if [ ! -L "$wezterm_config" ]; then
+            echo "Backing up existing wezterm config to $wezterm_config.bak"
+            mv "$wezterm_config" "$wezterm_config.bak"
+        fi
+    fi
+
+    if [ ! -L "$wezterm_config" ]; then
+        echo "Creating symlink for wezterm config"
+        ln -sf "$wezterm_repo_config" "$wezterm_config"
+    fi
+}
 
 # Check for required commands for this script
 check_commands
@@ -159,6 +175,11 @@ fi
 # Neovim IDE Config Linking
 if command -v nvim &> /dev/null; then
     create_nvim_symlink
+fi
+
+# WezTerm Terminal Config Linking
+if command -v wezterm &> /dev/null; then
+    create_wezterm_symlink
 fi
 
 # Stuff for VSCode IDE
