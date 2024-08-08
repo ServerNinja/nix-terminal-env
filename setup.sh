@@ -74,6 +74,22 @@ check_figlet_fonts() {
     fi
 }
 
+check_tmux_tpm_plugin() {
+  # git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    local tmux_plugin_dir="$HOME/.tmux/plugins"
+
+    # Check for the tmux plugin manager directory
+    if [ ! -d "$tmux_plugin_dir" ]; then
+        mkdir -p "$tmux_plugin_dir"
+    fi  
+
+    # Check for the tpm directory
+    if [ ! -d "$tmux_plugin_dir/tpm" ]; then
+        echo "Cloning tpm repository to $tmux_plugin_dir/tpm"
+        git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    fi
+}
+
 link_zsh_files() {
     files=(".zshrc" ".motd")
     for file in "${files[@]}"; do
@@ -110,11 +126,11 @@ check_starship_config() {
 
 create_tmux_symlink() {
     local tmux_config="$HOME/.tmux.conf"
-    local tmux_repo_config="$BASE_DIR/configs/tmux/.tmux.conf"
+    local tmux_repo_config="$BASE_DIR/configs/tmux/tmux.conf"
 
     if [ -f "$tmux_config" ]; then
-        if [ ! -L "$tmux_config" ]; then
-            echo "Backing up existing tmux config to $tmux_config.bak"
+        if [ -L "$tmux_config" ]; then
+            rm -f "$tmux_config"
             mv "$tmux_config" "$tmux_config.bak"
         fi
     fi
@@ -167,9 +183,11 @@ link_zsh_files
 check_figlet_fonts
 check_starship_config
 
+
 # Tmux Config Linking
 if command -v tmux &> /dev/null; then
     create_tmux_symlink
+    check_tmux_tpm_plugin
 fi
 
 # Neovim IDE Config Linking
