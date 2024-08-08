@@ -8,4 +8,4 @@ keymap.set('n', '<C-n>', ':NvimTreeFocus<CR>')
 keymap.set('n', '<leader>lg', '<cmd>LazyGit<cr>', {desc = "LazyGit"})
 
 -- Telescope
-keymap.set('n', '<C-p>', telescope.find_files, {})
+keymap.set('n', '<C-p>', '<cmd>Telescope find_files<cr>', {})

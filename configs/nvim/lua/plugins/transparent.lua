@@ -3,7 +3,6 @@ return {
 
   config = function()
     require('transparent').setup({
-      enable = true,
       extra_groups = {
         'TelescopePrompt',
         'TelescopeResults',
@@ -14,7 +13,6 @@ return {
         'NvimTreeNormal',
         'NormalFloat',
       },
-      exclude = {},
     })
   end,
 }
