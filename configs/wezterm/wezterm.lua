@@ -6,12 +6,15 @@ local wezterm = require("wezterm")
 local function mode_overrides(appearance)
   if appearance:find("Dark") then
     return {
-      color_scheme = "Gruvbox Material (Gogh)",
+      -- Themes: https://wezfurlong.org/wezterm/colorschemes/index.html
+      color_scheme = "Neon (terminal.sexy)",
       -- background = "#1e1e1e",
     }
   else
     return {
-      color_scheme = "catppuccin-latte",
+      -- Themes: https://wezfurlong.org/wezterm/colorschemes/index.html
+      --color_scheme = "catppuccin-latte",
+      color_scheme = "Nord Light (Gogh)",
       -- background = "#d1d1d1",
     }
   end
