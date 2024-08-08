@@ -19,7 +19,11 @@ local opts = {}
 
 -- Load options
 require("vim-options")
+require("keymaps")
 
 -- Load plugins from lua/plugins.lua
 require("lazy").setup("plugins")
+
+-- Load color themes from lua/plugins.lua
+require("lazy").setup("themes")
 

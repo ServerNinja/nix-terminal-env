@@ -7,7 +7,6 @@ return {
   },
   config = function()
     -- Toggle nvim-tree focus with <C-n>
-    vim.keymap.set('n', '<C-n>', ':NvimTreeFocus<CR>')
 
     require("nvim-tree").setup {
       sort = {
