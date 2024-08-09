@@ -1,0 +1,9 @@
+return {
+  'hashivim/vim-terraform',
+  ft = {'terraform'},
+  config = function()
+    require('vim-terraform').setup {
+
+    }
+  end
+}

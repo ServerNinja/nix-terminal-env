@@ -13,6 +13,9 @@ return {
         'NvimTreeNormal',
         'NormalFloat',
       },
+      exclude_groups = {
+        "lualine",
+      },
     })
   end,
 }
