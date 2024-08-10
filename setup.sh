@@ -124,6 +124,23 @@ check_starship_config() {
     fi
 }
 
+check_powerlevel10k_config() {
+    local powerlevel10k_config="$HOME/.p10k.zsh"
+    local powerlevel10k_repo_config="$BASE_DIR/configs/powerlevel10k/p10k.zsh"
+
+    if [ -f "$powerlevel10k_config" ]; then
+        if [ ! -L "$powerlevel10k_config" ]; then
+            echo "Backing up existing p10k.toml to p10k.toml.bak"
+            mv "$powerlevel10k_config" "$powerlevel10k_config.bak"
+        fi
+    fi
+
+    if [ ! -L "$powerlevel10k_config" ]; then
+       echo "Creating symlink for p10k.toml"
+       ln -sf "$powerlevel10k_repo_config" "$powerlevel10k_config"
+    fi
+}
+
 create_tmux_symlink() {
     local tmux_config="$HOME/.tmux.conf"
     local tmux_repo_config="$BASE_DIR/configs/tmux/tmux.conf"

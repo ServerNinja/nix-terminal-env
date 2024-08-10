@@ -1,3 +1,15 @@
+# Choosing your custom prompt
+CUST_PROMPT="powerlevel10k" # can be "starship" or "powerlevel10k"
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ "$CUST_PROMPT" == "powerlevel10k" ]]; then
+  if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+  fi
+fi
+
 if [[ "$(uname)" == "Darwin" ]]; then
   IS_DARWIN="true"
 else
@@ -38,6 +50,11 @@ if command -v podman &> /dev/null && ! command -v docker &> /dev/null; then
     }
 fi
 
+# Alias nerd-ls to ls if installed
+if command -v nerd-ls &> /dev/null; then
+  alias ls='nerd-ls -i'
+fi
+
 # Enable vi mode
 bindkey -v
 
@@ -74,7 +91,9 @@ export PATH=$PATH:$(go env GOPATH)/bin
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 ### Starship
-eval "$(starship init zsh)"
+if [[ "$CUST_PROMPT" == "starship" ]]; then
+  eval "$(starship init zsh)"
+fi
 
 # FZF
 source <(fzf --zsh)
@@ -107,4 +126,12 @@ if command -v tmux &> /dev/null; then
     fi
     unset OPEN_SESSIONS SESSION_ID SUPPORTED_TMUX_TERMINALS
   fi
+fi
+
+if [[ "$CUST_PROMPT" == "powerlevel10k" ]]; then
+  source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
+  
+  # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+  source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
 fi
