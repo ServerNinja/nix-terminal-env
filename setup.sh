@@ -205,6 +205,7 @@ check_starship_config
 if command -v tmux &> /dev/null; then
     create_tmux_symlink
     check_tmux_tpm_plugin
+    check_powerlevel10k_config
 fi
 
 # Neovim IDE Config Linking
