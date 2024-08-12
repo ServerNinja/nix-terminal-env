@@ -7,14 +7,18 @@ local function mode_overrides(appearance)
   if appearance:find("Dark") then
     return {
       -- Themes: https://wezfurlong.org/wezterm/colorschemes/index.html
-      color_scheme = "Neon (terminal.sexy)",
+      --color_scheme = "Neon (terminal.sexy)",
+      color_scheme = "Heetch Dark (base16)",
+      --color_scheme = "Hemisu Dark (Gogh)",
       -- background = "#1e1e1e",
     }
   else
     return {
       -- Themes: https://wezfurlong.org/wezterm/colorschemes/index.html
       --color_scheme = "catppuccin-latte",
-      color_scheme = "Nord Light (Gogh)",
+      --color_scheme = "Heetch Light (base16)",
+      --color_scheme = "Hemisu Light (Gogh)",
+      color_scheme = "Humanoid light (base16)",
       -- background = "#d1d1d1",
     }
   end
