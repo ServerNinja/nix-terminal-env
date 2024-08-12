@@ -6,16 +6,18 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ "$CUST_PROMPT" == "powerlevel10k" ]]; then
-
   if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
   fi
 fi
 
+
 if [[ "$(uname)" == "Darwin" ]]; then
   IS_DARWIN="true"
+  BREW_PREFIX="/opt/homebrew"
 else
   IS_DARWIN="false"
+  BREW_PREFIX="/home/linuxbrew/.linuxbrew"
 fi
 
 # Editor
@@ -24,38 +26,8 @@ export VISUAL="vi"
 export K9S_EDITOR=vi
 export TERM="xterm-256color"
 
-# Quit bitching about commnets, stupid ZSH!
-setopt interactivecomments
-
-# Terraform bypass
-alias tf_bypass='export TF_FORCE_LOCAL_BACKEND=1'
-
-# Homebrew
-if [[ "$IS_DARWIN" == "true" ]]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-else
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" 
-fi
-
-# Linux version of OSX pbcopy and pbpaste.
-alias pbcopy='xsel — clipboard — input'
-alias pbpaste='xsel — clipboard — output'
-
-# Cargo
-source "$HOME/.cargo/env"
-
-
-# Alias docker to podman via function only if podman is installed and docker is not installed
-if command -v podman &> /dev/null && ! command -v docker &> /dev/null; then
-    docker() {
-        podman "$@"
-    }
-fi
-
-# Alias nerd-ls to ls if installed
-if command -v nerd-ls &> /dev/null; then
-  alias ls='nerd-ls -i'
-fi
+# Include bin directory for personal scripts
+export PATH=$PATH:/Users/$(whoami)/bin
 
 # Enable vi mode
 bindkey -v
@@ -74,37 +46,80 @@ bindkey '^S' history-incremental-search-forward  # Perform forward search in com
 autoload -Uz add-zsh-hook
 setopt prompt_subst
 
+# Quit bitching about commnets, stupid ZSH!
+setopt interactivecomments
+
+# Homebrew
+if command -v ${BREW_PREFIX}/bin/brew &> /dev/null; then
+  eval "$(${BREW_PREFIX}/bin/brew shellenv)"
+
+  # Use coreutils (installed via homebrew)
+  PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+else
+  echo "ERROR: Please install homebrew"
+fi
+
+# Terraform bypass
+alias tf_bypass='export TF_FORCE_LOCAL_BACKEND=1'
+
+# Linux version of OSX pbcopy and pbpaste.
+alias pbcopy='xsel — clipboard — input'
+alias pbpaste='xsel — clipboard — output'
+
+# Cargo (Rust)
+if command -v cargo &> /dev/null; then
+  source "$HOME/.cargo/env"
+fi
+
+# Alias docker to podman via function only if podman is installed and docker is not installed
+if command -v podman &> /dev/null && ! command -v docker &> /dev/null; then
+    docker() {
+        podman "$@"
+    }
+fi
+
+# Alias nerd-ls to ls if installed
+if command -v nerd-ls &> /dev/null; then
+  alias ls='nerd-ls -i'
+fi
+
 # Add Visual Studio Code (code)
 if [[ "$IS_DARWIN" == "true" ]]; then
     code () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
 fi
 
-# Include bin directory
-export PATH=$PATH:/Users/$(whoami)/bin
-
-# Use coreutils (installed via homebrew)
-PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
-
 # GO
-export GOPATH=$HOME/go
-export PATH=$PATH:$(go env GOPATH)/bin
+if command -v go &> /dev/null; then
+  export GOPATH=$HOME/go
+  export PATH=$PATH:$(go env GOPATH)/bin
+fi
 
-### Krew (Kubectl)
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+### Kubectl
+if command -v kubectl &> /dev/null; then
+  # Krew
+  export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+  # kubectl context selector
+  alias kubectx='kubectl config use-context $(kubectl config get-contexts -o name | fzf)'
+
+fi
 
 ### Starship
 if [[ "$CUST_PROMPT" == "starship" ]]; then
-  eval "$(starship init zsh)"
+  if command -v starship &> /dev/null; then
+    eval "$(starship init zsh)"
+  else
+    echo "ERROR: Please install starship"
+  fi
 fi
 
 # FZF
-source <(fzf --zsh)
+if command -v fzf &> /dev/null; then
+  source <(fzf --zsh)
+fi
 
 # aws profile selector
 alias aws-profile='export AWS_PROFILE=$(aws configure list-profiles | fzf)'
-# kubectl context selector
-alias kubectx='kubectl config use-context $(kubectl config get-contexts -o name | fzf)'
-
 # Display custom MOTD
 if [ -f ~/.motd ]; then
     . ~/.motd
@@ -131,9 +146,7 @@ if command -v tmux &> /dev/null; then
 fi
 
 if [[ "$CUST_PROMPT" == "powerlevel10k" ]]; then
-  source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
-  
   # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
   [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-  source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
+  source "${BREW_PREFIX}/share/powerlevel10k/powerlevel10k.zsh-theme"
 fi
