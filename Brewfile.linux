@@ -25,3 +25,5 @@ brew "lazygit"
 
 # Powerlevel10k
 brew "powerlevel10k"
+
+brew 'gotop'
