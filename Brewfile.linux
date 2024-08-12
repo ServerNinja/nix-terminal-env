@@ -25,6 +25,3 @@ brew "lazygit"
 
 # Powerlevel10k
 brew "powerlevel10k"
-
-# nerd-ls
-brew "drn/homebrew-tap/nerd-ls"

@@ -79,8 +79,10 @@ if command -v podman &> /dev/null && ! command -v docker &> /dev/null; then
 fi
 
 # Alias nerd-ls to ls if installed
-if command -v nerd-ls &> /dev/null; then
+if [ -L "$BREW_PREFIX/bin/nerd-ls" ] &> /dev/null; then
   alias ls='nerd-ls -i'
+elif command -v lsd &> /dev/null ; then
+  alias ls='lsd'
 fi
 
 # Add Visual Studio Code (code)
