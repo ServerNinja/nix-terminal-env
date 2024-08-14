@@ -21,6 +21,27 @@ local opts = {}
 require("vim-options")
 require("keymaps")
 
+-- LazyVim configuration
 -- Load plugins from lua/plugins.lua
-require("lazy").setup("plugins")
-
+-- Docs: https://lazy.folke.io/
+require("lazy").setup({
+  spec = {
+    -- import your plugins
+    { import = "plugins" },
+  },
+  -- Lazy ui config
+  ui = {
+    border = "double",
+    size = {
+      width = 0.8,
+      height = 0.8,
+    },
+  },
+  checker = {
+    enabled = true,
+    notify = false,
+  },
+  change_detection = {
+    notify = false,
+  },
+})
