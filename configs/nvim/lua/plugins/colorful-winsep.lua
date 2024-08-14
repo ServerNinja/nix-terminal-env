@@ -4,8 +4,6 @@ return {
   event = { "WinLeave" },
 
   config = function()
-    require("colorful-winsep").setup({
-      -- Setup overrides here
-    }) 
+    require("colorful-winsep").setup()
   end,
 }
