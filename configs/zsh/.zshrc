@@ -24,7 +24,7 @@ fi
 export EDITOR="vi"
 export VISUAL="vi"
 export K9S_EDITOR=vi
-export TERM="xterm-256color"
+export TERM="screen-256color"
 
 # Include bin directory for personal scripts
 export PATH=$PATH:/Users/$(whoami)/bin
