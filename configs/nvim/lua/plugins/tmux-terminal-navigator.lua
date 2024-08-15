@@ -1,3 +1,9 @@
+-- vim-tmux-navigator plugin
+--
+-- Seamless navigation between tmux panes and vim splits
+-- Link: https://github.com/christoomey/vim-tmux-navigator
+--
+-- Notes: A set of configurations are also placed in ~/.tmux.conf for this to work properly
 return {
   "christoomey/vim-tmux-navigator",
   cmd = {

@@ -1,4 +1,9 @@
+-- nvim-treesitter plugin
+--
 -- For syntax highlighting and indentation
+-- Works with the tree-sitter interface in Neovim
+--
+-- Link: https://github.com/nvim-treesitter/nvim-treesitter
 return { 
   "nvim-treesitter/nvim-treesitter", 
   build = ":TSUpdate",

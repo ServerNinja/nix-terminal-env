@@ -1,3 +1,7 @@
+-- hlchunk.nvim plugin
+--
+-- Higlight the current chunk of code and indent lines
+-- Link: https://github.com/shellRaining/hlchunk.nvim
 return {
   "shellRaining/hlchunk.nvim",
   event = { "BufReadPre", "BufNewFile" },

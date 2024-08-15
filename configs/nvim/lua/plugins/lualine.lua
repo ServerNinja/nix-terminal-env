@@ -1,3 +1,7 @@
+-- lualine.nvim plugin
+--
+-- A blazing fast and easy to configure neovim statusline written in pure lua.
+-- Link: https://github.com/nvim-lualine/lualine.nvim
 return {
   "nvim-lualine/lualine.nvim",
 

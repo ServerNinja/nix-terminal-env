@@ -1,3 +1,9 @@
+-- oil.nvim plugin
+--
+-- A file explorer plugin. Also gives capability to edit file tree in a vim style editor in a floating window.
+-- Link: https://github.com/stevearc/oil.nvim
+--
+-- Notes: I'm currently integrating this with nvim-tree - see the nvim-tree.lua file for details.
 return {
   'stevearc/oil.nvim',
   opts = {},

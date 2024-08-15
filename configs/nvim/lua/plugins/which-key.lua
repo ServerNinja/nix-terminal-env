@@ -1,3 +1,7 @@
+-- which-key.nvim
+--
+-- A plugin to assist with helping you remember keybindings
+-- Link: https://github.com/folke/which-key.nvim
 return {
   "folke/which-key.nvim",
   event = "VeryLazy",

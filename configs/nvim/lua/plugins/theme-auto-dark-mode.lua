@@ -1,3 +1,7 @@
+-- auto-dark-mode.nvim plugin
+--
+-- Automatically switch between light and dark mode based on OS Settings
+-- Link: https://github.com/f-person/auto-dark-mode.nvim
 return {
   "f-person/auto-dark-mode.nvim",
   opts = {

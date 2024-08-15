@@ -1,3 +1,7 @@
+-- copilot.lua plugin
+--
+-- Realtime Copilot coding for Neovim
+-- Link: https://github.com/zbirenbaum/copilot.lua
 return {
   "zbirenbaum/copilot.lua",
   cmd = "Copilot",

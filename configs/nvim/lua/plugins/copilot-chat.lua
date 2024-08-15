@@ -1,3 +1,7 @@
+-- CopilotChat.nvim plugin
+--
+-- Chat with Copilot in Neovim
+-- Link: https://github.com/CopilotC-Nvim/CopilotChat.nvim
 return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",

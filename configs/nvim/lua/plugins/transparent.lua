@@ -1,3 +1,9 @@
+-- transparent.nvim
+--
+-- Removes background on nvim windows and buffers
+-- Link: https://github.com/xiyaowong/transparent.nvim
+--
+-- Notes: Below are configurations to include / exclude groups of things we don't want this to apply to. This makes lualine look like crap so I excluded it in the exclude_groups
 return {
   'xiyaowong/transparent.nvim',
 

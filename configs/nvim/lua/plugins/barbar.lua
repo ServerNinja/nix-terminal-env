@@ -1,3 +1,7 @@
+-- barbar.nvim plugin
+--
+-- Tabline Management Plugin
+-- Link: https://github.com/romgrk/barbar.nvim
 return {
   'romgrk/barbar.nvim',
   dependencies = {
