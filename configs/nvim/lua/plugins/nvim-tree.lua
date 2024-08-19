@@ -4,14 +4,33 @@
 -- Link: https://github.com/nvim-tree/nvim-tree.lua
 return {
   "nvim-tree/nvim-tree.lua",
-  dependencies = "nvim-tree/nvim-web-devicons",
+  dependencies = {
+    "nvim-tree/nvim-web-devicons",
+    "s1n7ax/nvim-window-picker"
+  },
   config = function()
     local nvimtree = require("nvim-tree")
+    local window_picker = require("window-picker")
 
     -- recommended settings from nvim-tree documentation
     vim.g.loaded_netrw = 1
     vim.g.loaded_netrwPlugin = 1
 
+    -- Setup window picker
+    window_picker.setup({
+      autoselect_one = true,
+      include_current_win = false,
+      filter_rules = {
+        -- filter using buffer options
+        bo = {
+          filetype = { "NvimTree", "neo-tree", "notify" },
+          buftype = { "terminal", "quickfix" },
+        },
+      },
+      other_win_hl_color = "#e35e4f",
+    })
+
+    -- For keymaps
     local function my_on_attach(bufnr)
       local api = require("nvim-tree.api")
       local lib = require("nvim-tree.lib")
@@ -92,7 +111,19 @@ return {
         open_file = {
           resize_window = true,
           window_picker = {
+            -- nvim-windowpicker plugin config goes here
             enable = true,
+--            picker = function()
+--              local api = require("nvim-tree.api")
+--              local node = api.tree.get_node_under_cursor()
+--              local picker = window_picker.pick_window()
+--              if picker then
+--                vim.api.nvim_set_current_win(picker)
+--              else
+--                -- No window picked, open in new window
+--                api.node.open.vertical()
+--              end
+--            end,
           },
         },
       },
