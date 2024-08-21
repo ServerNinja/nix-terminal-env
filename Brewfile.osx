@@ -38,3 +38,6 @@ brew "powerlevel10k"
 
 # nerd-ls
 brew "drn/homebrew-tap/nerd-ls"
+
+# Wezterm
+brew "wezterm"
