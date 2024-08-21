@@ -13,6 +13,12 @@ vim.g.maplocalleader = "\\"
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 
+-- Highlight current line
+vim.opt.cursorline = true
+vim.opt.number = true
+vim.opt.termguicolors = true
+vim.opt.cursorlineopt = "both"
+
 -- For copilot
 vim.g.copilot_assume_mapped = true
 
@@ -25,3 +31,4 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
 --Integrate clipboard with system clipboard
 vim.opt.clipboard = 'unnamedplus'
+

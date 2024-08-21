@@ -83,7 +83,10 @@ return {
       on_attach = my_on_attach,
       view = {
         width = 40,
-        relativenumber = true,
+        --relativenumber = false,
+        cursorline = true,
+        number = true,
+        signcolumn = "yes",
       },
       sync_root_with_cwd = true,
       -- change folder arrow icons

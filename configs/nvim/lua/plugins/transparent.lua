@@ -21,6 +21,9 @@ return {
       },
       exclude_groups = {
         "lualine",
+        "CursorLine",
+        "CursorLineNr",
+        "CursorColumn",
       },
     })
   end,
