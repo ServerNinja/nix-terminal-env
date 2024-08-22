@@ -5,7 +5,7 @@
 OS: Linux (debian / ubuntu) Specific:
 ```
 # Install packages
-sudo apt-get install -y build-essential zsh git wget curl nodejs ncal unzip
+sudo apt-get install -y build-essential zsh git wget curl nodejs ncal unzip xsel
 
 # Install WezTerm from apt package manager
 curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
