@@ -14,9 +14,8 @@ sudo apt update
 sudo apt -y install wezterm
 
 # Change shell to zsh
-chsh -s $(which zsh)
-
 touch ~/.zshrc
+chsh -s $(which zsh)
 
 # Switch to zsh session
 $(which zsh)
@@ -25,7 +24,7 @@ $(which zsh)
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Initialize homebrew for this session
-eval "$(${BREW_PREFIX}/bin/brew shellenv)"
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # Install bundle with homebrew
 brew bundle install --file Brewfile.linux
