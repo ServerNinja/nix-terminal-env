@@ -64,8 +64,8 @@ alias tf_bypass='export TF_FORCE_LOCAL_BACKEND=1'
 
 # Linux version of OSX pbcopy and pbpaste.
 if ! command -v pbcopy &> /dev/null; then
-  alias pbcopy='xsel — clipboard — input'
-  alias pbpaste='xsel — clipboard — output'
+  alias pbcopy='xsel -i --clipboard'
+  alias pbpaste='xsel -o --clipboard'
 fi
 
 # Cargo (Rust)
