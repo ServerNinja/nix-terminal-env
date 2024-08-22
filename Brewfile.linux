@@ -27,3 +27,6 @@ brew "lazygit"
 brew "powerlevel10k"
 
 brew 'gotop'
+
+# ls command with nerd font
+brew "lsd"
