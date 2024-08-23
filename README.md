@@ -28,6 +28,11 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # Install bundle with homebrew
 brew bundle install --file Brewfile.linux
+
+# Installing VSCode
+VSCODE_DOWNLOAD=~/Downloads/vscode-latest.deb
+curl -o "$VSCODE_DOWNLOAD" -L "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+sudo dpkg -i "$VSCODE_DOWNLOAD"
 ```
 
 OS: OSX Spcific
