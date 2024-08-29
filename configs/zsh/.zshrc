@@ -132,7 +132,7 @@ fi
 # Launching tmux on terminal startup
 SUPPORTED_TMUX_TERMINALS=("iTerm.app" "WezTerm")
 if command -v tmux &> /dev/null; then
-  if [[ "${SUPPORTED_TMUX_TERMINALS[*]}" =~ "$TERM_PROGRAM" ]]; then
+   if [[ -n "$TERM_PROGRAM" && " ${SUPPORTED_TMUX_TERMINALS[*]} " == *" $TERM_PROGRAM "* ]]; then
     # Your code for supported terminals here
 
     # Find detached sessions and attach to the first one in the list
