@@ -140,10 +140,10 @@ if command -v tmux &> /dev/null; then
     if [ -n "$OPEN_SESSIONS" ]; then
       SESSION_ID=$(echo "$OPEN_SESSIONS" | awk '{print $1}' | sed -e 's/:$//' | head -n 1)
       echo "TMUX: Attaching to session: $SESSION_ID"
-      tmux attach-session -t $SESSION_ID
+      exec tmux attach-session -t $SESSION_ID
     else
       # If no detached sessions are found, create a new one
-      tmux new-session
+      exec tmux new-session
     fi
     unset OPEN_SESSIONS SESSION_ID SUPPORTED_TMUX_TERMINALS
   fi
