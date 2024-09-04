@@ -19,6 +19,9 @@ vim.opt.number = true
 vim.opt.termguicolors = true
 vim.opt.cursorlineopt = "both"
 
+-- Disable highlight search
+vim.opt.hlsearch = false
+
 -- For copilot
 vim.g.copilot_assume_mapped = true
 
@@ -31,4 +34,3 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
 --Integrate clipboard with system clipboard
 vim.opt.clipboard = 'unnamedplus'
-
