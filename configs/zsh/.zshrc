@@ -11,7 +11,6 @@ if [[ "$CUST_PROMPT" == "powerlevel10k" ]]; then
   fi
 fi
 
-
 if [[ "$(uname)" == "Darwin" ]]; then
   IS_DARWIN="true"
   BREW_PREFIX="/opt/homebrew"
@@ -67,6 +66,36 @@ if ! command -v pbcopy &> /dev/null; then
   alias pbcopy='xsel -i --clipboard'
   alias pbpaste='xsel -o --clipboard'
 fi
+
+# Manage.py
+manage.py() {
+  if git rev-parse &>/dev/null ; then
+    TF_FOLDER="$(git rev-parse --show-toplevel)/terraform"
+    if [ -f "${TF_FOLDER}/manage.py" ]; then
+      "${TF_FOLDER}/manage.py" $@
+    else
+      echo "ERROR: missing manage.py script..."
+    fi
+    unset TF_FOLDER
+  else
+    echo "ERROR: Not a git repo..."
+  fi
+}
+
+# Terraform fmt linter
+tf_lint() {
+  if git rev-parse &>/dev/null ; then
+    TF_FOLDER="$(git rev-parse --show-toplevel)/terraform"
+    if [ -d "${TF_FOLDER}" ]; then
+      tofu fmt -recursive 
+    else
+      echo "ERROR: No such directory: $TF_FOLDER..."
+    fi
+    unset TF_FOLDER
+  else
+    echo "ERROR: Not a git repo..."
+  fi
+}
 
 # Cargo (Rust)
 if command -v cargo &> /dev/null; then
