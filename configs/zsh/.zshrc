@@ -26,7 +26,7 @@ export K9S_EDITOR=vi
 export TERM="xterm-256color"
 
 # Include bin directory for personal scripts
-export PATH=$PATH:/Users/$(whoami)/bin
+export PATH=$PATH:$HOME/bin
 
 # Enable vi mode
 bindkey -v
