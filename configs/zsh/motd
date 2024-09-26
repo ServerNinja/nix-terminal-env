@@ -4,6 +4,8 @@
 # Get the number of columns in the terminal
 cols=$(tput cols)
 
+. ${HOME}/.zsh_config_overrides
+
 # Font Examples: https://github.com/xero/figlet-fonts/blob/master/Examples.md
 if [ "${MOTD_TYPE}" = "fancy" ]; then
     if command -v figlet >/dev/null 2>&1 && command -v lolcat >/dev/null 2>&1; then
