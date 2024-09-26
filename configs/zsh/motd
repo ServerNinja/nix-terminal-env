@@ -1,0 +1,20 @@
+#!/bin/bash
+# MOTD
+
+# Get the number of columns in the terminal
+cols=$(tput cols)
+
+# Font Examples: https://github.com/xero/figlet-fonts/blob/master/Examples.md
+if [ "${MOTD_TYPE}" = "fancy" ]; then
+    if command -v figlet >/dev/null 2>&1 && command -v lolcat >/dev/null 2>&1; then
+        echo "${MOTD_FANCY_MESSAGE}" | figlet -w $cols -f ~/.local/share/figlet-fonts/$MOTD_FANCY_FONT | lolcat
+    else
+      echo ${MOTD_MESSAGE}
+    fi
+elif [ "${MOTD_TYPE}" = "ascii" ]; then
+    echo $MOTD_ASCII_MESSAGE
+elif [ "${MOTD_TYPE}" = "simple" ]; then
+    echo ${MOTD_MESSAGE}
+elif [ "${MOTD_TYPE}" = "neofetch" ]; then
+    neofetch
+fi

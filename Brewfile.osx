@@ -41,3 +41,6 @@ brew "drn/homebrew-tap/nerd-ls"
 
 # Wezterm
 brew "wezterm"
+
+# neofetch
+brew "neofetch"

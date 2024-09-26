@@ -30,3 +30,6 @@ brew 'gotop'
 
 # ls command with nerd font
 brew "lsd"
+
+# neofetch
+brew "neofetch"

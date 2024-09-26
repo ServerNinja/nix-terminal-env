@@ -1,5 +1,12 @@
+# Some overrides
+if [ -f ~/.zsh_config_overrides ]; then
+  source ~/.zsh_config_overrides
+fi
+
 # Choosing your custom prompt
-CUST_PROMPT="powerlevel10k" # can be "starship" or "powerlevel10k"
+[ -z "${CUST_PROMPT}" ] && CUST_PROMPT="powerlevel10k" # can be "starship" or "powerlevel10k"
+[ -z "${STARSHIP_PRESET}" ] && STARSHIP_PRESET="pastel" # can be either "pastel", "tokyo-night", "rainbow"
+ln -sf "$HOME/.config/starship-${STARSHIP_PRESET}.toml" "$HOME/.config/starship.toml"
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.

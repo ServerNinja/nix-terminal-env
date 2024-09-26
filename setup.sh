@@ -143,38 +143,47 @@ check_tmux_tpm_plugin() {
 
 link_zsh_files() {
     log_info "Linking zsh files"
-    files=(".zshrc" ".motd")
+    files=("zshrc" "motd")
     for file in "${files[@]}"; do
-        if [ -f "$HOME/$file" ]; then
-            if [ ! -L "$HOME/$file" ]; then
-                log_warning "Backing up existing $file to $file.bak"
-                mv "$HOME/$file" "$HOME/$file.bak"
+        if [ -f "$HOME/.$file" ]; then
+            if [ ! -L "$HOME/.$file" ]; then
+                log_warning "Backing up existing .$file to .$file.bak"
+                mv "$HOME/.$file" "$HOME/.$file.bak"
             fi
         fi
-        if [ ! -L "$HOME/$file" ]; then
-            log_warning "Linking $file to $BASE_DIR/configs/zsh/$file"
-            ln -s "$BASE_DIR/configs/zsh/$file" "$HOME/$file"
+        if [ ! -L "$HOME/.$file" ]; then
+            log_warning "Linking $file to $BASE_DIR/configs/zsh/.$file"
+            ln -sf "$BASE_DIR/configs/zsh/$file" "$HOME/.$file"
         fi
-
     done
 }
 
+copy_zsh_overrides_config() {
+  log_info "Checking for ~/.zsh_config_overrides file"
+  overrides_file="$BASE_DIR/configs/zsh/zsh_config_overrides"
+
+  if [ ! -f "${HOME}/.zsh_config_overrides" ]; then
+    log_warning "Copying zsh_config_overrides to ~/.zsh_config_overrides"
+    cp "$overrides_file" "${HOME}/.zsh_config_overrides"
+  fi
+}
+
 check_starship_config() {
-    log_info "Checking starship config"
-    local starship_config="$HOME/.config/starship.toml"
-    local starship_repo_config="$BASE_DIR/configs/starship/starship.toml"
+  log_info "Checking starship configs"
+  local starship_config_dir="$HOME/.config/"
+  local starship_repo_config_dir="$BASE_DIR/configs/starship"
 
-    if [ -f "$starship_config" ]; then
-        if [ ! -L "$starship_config" ]; then
-            log_warning "Backing up existing starship.toml to starship.toml.bak"
-            mv "$starship_config" "$starship_config.bak"
-        fi
-    fi
+  # Clean up existing symlinks and configs
+  rm -f $starship_config_dir/starship*.toml*
 
-    if [ ! -L "$starship_config" ]; then
-       log_warning "Creating symlink for starship.toml"
-       ln -sf "$starship_repo_config" "$starship_config"
-    fi
+  pushd "$starship_config_dir" &> /dev/null
+
+  # Symlinking Starship configs
+  for config in $starship_repo_config_dir/*.toml; do
+    ln -s $config
+  done
+
+  popd &> /dev/null
 }
 
 check_powerlevel10k_config() {
@@ -217,6 +226,16 @@ create_tmux_symlink() {
     fi
 }
 
+vim_plugins() {
+  VIM_PLUGINS_DIR="${HOME}/.vim/pack/plugins/start"
+  mkdir -p "${VIM_PLUGINS_DIR}"
+
+  if [ ! -d "${VIM_PLUGINS_DIR}/vim-tmux-navigator" ]; then
+    log_warning "Cloning vim-tmux-navigator repository to $${VIM_PLUGINS_DIR}/vim-tmux-navigator"
+    git clone git@github.com:christoomey/vim-tmux-navigator.git "${VIM_PLUGINS_DIR}/vim-tmux-navigator"
+  fi
+}
+
 create_nvim_symlink() {
     log_info "Checking nvim config links"
     local nvim_config="$HOME/.config/nvim"
@@ -253,11 +272,30 @@ create_wezterm_symlink() {
     fi
 }
 
+create_vimrc_symlink() {
+    log_info "Checking vimrc config symlink"
+    local vimrc_config="$HOME/.vimrc"
+    local vimrc_repo_config="$BASE_DIR/configs/vim/vimrc"
+
+    if [ -f "$vimrc_config" ]; then
+        if [ ! -L "$vimrc_config" ]; then
+            log_warning "Backing up existing vimrc config to $vimrc_config.bak"
+            mv "$vimrc_config" "$vimrc_config.bak"
+        fi
+    fi
+
+    if [ ! -L "$vimrc_config" ]; then
+        log_warning "Creating symlink for vimrc config"
+        ln -sf "$vimrc_repo_config" "$vimrc_config"
+    fi
+}
+
 # Check for required commands for this script
 check_commands
 
 # Terminal Config Linking
 link_zsh_files
+copy_zsh_overrides_config
 check_figlet_fonts
 check_starship_config
 
@@ -275,6 +313,10 @@ fi
 if command -v wezterm &> /dev/null; then
     create_wezterm_symlink
 fi
+
+# VIM Plugins
+create_vimrc_symlink
+vim_plugins
 
 # Tmux Config Linking
 if command -v tmux &> /dev/null; then
