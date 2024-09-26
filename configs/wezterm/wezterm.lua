@@ -8,9 +8,15 @@ local function mode_overrides(appearance)
     return {
       -- Themes: https://wezfurlong.org/wezterm/colorschemes/index.html
       --color_scheme = "Neon (terminal.sexy)",
-      color_scheme = "Heetch Dark (base16)",
+      --color_scheme = "Heetch Dark (base16)",
       --color_scheme = "Hemisu Dark (Gogh)",
+      --color_scheme = "Bananna Blueberry",
+      --color_scheme = "Bim (Gogh)",
+      --color_scheme = "Purpledream (base16)",
+      color_scheme = "Lavandula (Gogh)",
       -- background = "#1e1e1e",
+      window_background_opacity = 0.9,
+      macos_window_background_blur = 10,
     }
   else
     return {
@@ -18,8 +24,12 @@ local function mode_overrides(appearance)
       --color_scheme = "catppuccin-latte",
       --color_scheme = "Heetch Light (base16)",
       --color_scheme = "Hemisu Light (Gogh)",
-      color_scheme = "Humanoid light (base16)",
+      --color_scheme = "Humanoid light (base16)",
+      --color_scheme = "Fruit Soda (base16)",
+      color_scheme = "Summerfruit Light (base16)",
       -- background = "#d1d1d1",
+      window_background_opacity = 1.0,
+      macos_window_background_blur = 0,
     }
   end
 end
@@ -49,11 +59,6 @@ config.font_size = 12
 -- Enable / disable the tab bar
 config.enable_tab_bar = true
 config.use_fancy_tab_bar = false
-
--- Window Configuration
--- config.window_decorations = "RESIZE"
-config.window_background_opacity = 0.9
-config.macos_window_background_blur = 10
 
 config.enable_scroll_bar = true
 config.scrollback_lines = 50000
