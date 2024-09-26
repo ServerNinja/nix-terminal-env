@@ -190,3 +190,6 @@ if [[ "$CUST_PROMPT" == "powerlevel10k" ]]; then
   [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
   source "${BREW_PREFIX}/share/powerlevel10k/powerlevel10k.zsh-theme"
 fi
+
+# Unset variables
+unset CUST_PROMPT STARSHIP_PRESET IS_DARWIN BREW_PREFIX
