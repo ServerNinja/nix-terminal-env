@@ -84,7 +84,7 @@ config.use_fancy_tab_bar = config_override["use_fancy_tab_bar"] or false
 config.enable_scroll_bar = config_override["enable_scroll_bar"] or true
 config.scrollback_lines = config_override["scrollback_lines"] or 50000
 
-config.initial_rows = config_override["window_initial_rows"] or 25
+config.initial_rows = config_override["window_initial_rows"] or 27
 config.initial_cols = config_override["window_initial_cols"] or 120
 
 
