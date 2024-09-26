@@ -2,6 +2,27 @@
 local wezterm = require("wezterm")
 --
 
+-- Empty override_config
+local config_override = {}
+
+-- Function to load the override file, if it exists
+function load_overrides()
+  local overrides_path = wezterm.config_dir .. "/.wezterm_overrides.lua"
+  local f = io.open(overrides_path, "r")
+  if f then
+    -- Safely load the override config
+    local overrides = dofile(overrides_path)
+    -- Apply overrides to the main config
+    for k, v in pairs(overrides) do
+      config_override[k] = v
+    end
+    f:close()
+  end
+end
+
+-- Load override file
+load_overrides()
+
 -- dynamic color scheme switching
 local function mode_overrides(appearance)
   if appearance:find("Dark") then
@@ -54,7 +75,7 @@ local config = wezterm.config_builder()
 
 -- Font config
 config.font = wezterm.font("Hack Nerd Font Mono")
-config.font_size = 12
+config.font_size = config_override["font_size"] or 12
 
 -- Enable / disable the tab bar
 config.enable_tab_bar = true

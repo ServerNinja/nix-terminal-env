@@ -272,6 +272,17 @@ create_wezterm_symlink() {
     fi
 }
 
+copy_wezterm_overrides_config() {
+  config_file_location="$BASE_DIR/configs/wezterm"
+  overrides_file="wezterm_overrides.lua"
+  log_info "Checking for ~/.$overrides_file file"
+
+  if [ ! -f "${HOME}/.$overrides_file" ]; then
+    log_warning "Copying $overrides_file to ~/.$overrides_file"
+    cp "$config_file_location/$overrides_file" "${HOME}/.$overrides_file"
+  fi
+}
+
 create_vimrc_symlink() {
     log_info "Checking vimrc config symlink"
     local vimrc_config="$HOME/.vimrc"
@@ -312,6 +323,7 @@ fi
 # WezTerm Terminal Config Linking
 if command -v wezterm &> /dev/null; then
     create_wezterm_symlink
+    copy_wezterm_overrides_config
 fi
 
 # VIM Plugins
