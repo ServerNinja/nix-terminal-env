@@ -34,9 +34,9 @@ local function mode_overrides(appearance)
       --color_scheme = "Bananna Blueberry",
       --color_scheme = "Bim (Gogh)",
       --color_scheme = "Purpledream (base16)",
-      color_scheme = "Lavandula (Gogh)",
+      color_scheme = config_override["dark_mode_color_scheme"] or "Lavandula (Gogh)",
       -- background = "#1e1e1e",
-      window_background_opacity = 0.9,
+      window_background_opacity = config_override["dark_mode_background_opacity"] or 0.9,
       macos_window_background_blur = 10,
     }
   else
@@ -47,9 +47,9 @@ local function mode_overrides(appearance)
       --color_scheme = "Hemisu Light (Gogh)",
       --color_scheme = "Humanoid light (base16)",
       --color_scheme = "Fruit Soda (base16)",
-      color_scheme = "Summerfruit Light (base16)",
+      color_scheme = config_override["light_mode_color_scheme"] or "Summerfruit Light (base16)",
       -- background = "#d1d1d1",
-      window_background_opacity = 1.0,
+      window_background_opacity = config_override["light_mode_background_opacity"] or 1.0,
       macos_window_background_blur = 0,
     }
   end
@@ -74,18 +74,18 @@ end)
 local config = wezterm.config_builder()
 
 -- Font config
-config.font = wezterm.font("Hack Nerd Font Mono")
+config.font = wezterm.font(config_override["font"] or "Hack Nerd Font Mono")
 config.font_size = config_override["font_size"] or 12
 
 -- Enable / disable the tab bar
-config.enable_tab_bar = true
-config.use_fancy_tab_bar = false
+config.enable_tab_bar = config_override["enable_tab_bar"] or true
+config.use_fancy_tab_bar = config_override["use_fancy_tab_bar"] or false
 
-config.enable_scroll_bar = true
-config.scrollback_lines = 50000
+config.enable_scroll_bar = config_override["enable_scroll_bar"] or true
+config.scrollback_lines = config_override["scrollback_lines"] or 50000
 
-config.initial_rows = 25
-config.initial_cols = 120
+config.initial_rows = config_override["window_initial_rows"] or 27
+config.initial_cols = config_override["window_initial_cols"] or 120
 
 
 return config
