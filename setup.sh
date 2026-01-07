@@ -272,6 +272,26 @@ create_wezterm_symlink() {
     fi
 }
 
+create_ghostty_symlink() {
+    log_info "Checking ghostty config links"
+    local config="$HOME/.config/ghostty/config"
+    local repo_config="$BASE_DIR/configs/ghostty/config"
+
+    mkdir -pv "$HOME/.config/ghostty"
+
+    if [ -f "$config" ]; then
+        if [ ! -L "$wezterm_config" ]; then
+            log_warning "Backing up existing ghostty config to $config.bak"
+            mv "$config" "$config.bak"
+        fi
+    fi
+
+    if [ ! -L "$config" ]; then
+        log_warning "Creating symlink for ghostty config"
+        ln -sf "$repo_config" "$config"
+    fi
+}
+
 copy_wezterm_overrides_config() {
   config_file_location="$BASE_DIR/configs/wezterm"
   overrides_file="wezterm_overrides.lua"
@@ -324,6 +344,11 @@ fi
 if command -v wezterm &> /dev/null; then
     create_wezterm_symlink
     copy_wezterm_overrides_config
+fi
+
+# Ghostty Terminal Config Linking
+if command -v ghostty &> /dev/null; then
+    create_ghostty_symlink
 fi
 
 # VIM Plugins

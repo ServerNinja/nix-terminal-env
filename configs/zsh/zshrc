@@ -68,6 +68,9 @@ fi
 # Terraform bypass
 alias tf_bypass='export TF_FORCE_LOCAL_BACKEND=1'
 
+# BetterDiscord
+alias fix_discord='~/bin/betterdiscordctl --d-install flatpak install'
+
 # Linux version of OSX pbcopy and pbpaste.
 if ! command -v pbcopy &> /dev/null; then
   alias pbcopy='xsel -i --clipboard'
@@ -166,7 +169,7 @@ if [ -f ~/.motd ]; then
 fi
 
 # Launching tmux on terminal startup
-SUPPORTED_TMUX_TERMINALS=("iTerm.app" "WezTerm")
+SUPPORTED_TMUX_TERMINALS=("iTerm.app" "WezTerm" "ghostty")
 if command -v tmux &> /dev/null; then
    if [[ -n "$TERM_PROGRAM" && " ${SUPPORTED_TMUX_TERMINALS[*]} " == *" $TERM_PROGRAM "* ]]; then
     # Your code for supported terminals here
