@@ -47,3 +47,32 @@ keymap.set('n', '<leader>tl', '<Cmd>BufferNext<CR>', {desc = "Go to next buffer"
 keymap.set('n', '<leader>tc', '<Cmd>BufferClose<CR>', {desc = "Close buffer"})
 keymap.set('n', '<leader>tp', '<Cmd>BufferPick<CR>', {desc = "Pick buffer"})
 keymap.set('n', '<leader>tn', '<cmd>tabnew<CR>', {desc = "New tab"})
+
+-- Key mapping to close all buffers except the current one, skipping nvim-tree
+vim.keymap.set("n", "<leader>wx", function()
+  local current_buf = vim.api.nvim_get_current_buf()
+  local buffers = vim.api.nvim_list_bufs()
+  local plugin = require("lazy.core.config").plugins["colorful-winsep.nvim"]
+  local nvim_tree_api = require("nvim-tree.api")
+  nvim_tree_api.tree.open()
+
+  for _, buf in ipairs(buffers) do
+    if buf ~= current_buf and vim.api.nvim_buf_is_loaded(buf) then
+      -- Get the buffer name
+      local buf_name = vim.api.nvim_buf_get_name(buf)
+      -- Debugging: Print the buffer number and name
+      -- print("Buffer:", buf, "Name:", buf_name)
+
+      -- Skip buffers with 'NvimTree' in their name
+      if not buf_name:match("NvimTree") then
+        print("Deleting buffer:", buf)
+        vim.api.nvim_buf_delete(buf, { force = true })
+      else
+        print("Skipping nvim-tree buffer:", buf)
+      end
+    end
+  end
+
+  require("lazy.core.loader").reload(plugin)
+end, { desc = "Close all buffers except the current one (skip nvim-tree)" })
+ 

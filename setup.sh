@@ -346,10 +346,7 @@ if command -v wezterm &> /dev/null; then
     copy_wezterm_overrides_config
 fi
 
-# Ghostty Terminal Config Linking
-if command -v ghostty &> /dev/null; then
-    create_ghostty_symlink
-fi
+create_ghostty_symlink
 
 # VIM Plugins
 create_vimrc_symlink

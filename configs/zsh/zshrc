@@ -196,3 +196,4 @@ fi
 
 # Unset variables
 unset CUST_PROMPT STARSHIP_PRESET IS_DARWIN BREW_PREFIX
+export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
