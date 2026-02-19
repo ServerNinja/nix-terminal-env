@@ -61,6 +61,8 @@ if command -v ${BREW_PREFIX}/bin/brew &> /dev/null; then
 
   # Use coreutils (installed via homebrew)
   PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+  alias grep=ggrep
+  alias egrep=gegrep
 else
   echo "ERROR: Please install homebrew"
 fi
@@ -143,7 +145,8 @@ if command -v kubectl &> /dev/null; then
   export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
   # kubectl context selector
-  alias kubectx='kubectl config use-context $(kubectl config get-contexts -o name | fzf)'
+  alias kx='kubectl config use-context $(kubectl config get-contexts -o name | fzf)'
+
 
 fi
 
