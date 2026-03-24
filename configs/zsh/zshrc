@@ -26,6 +26,13 @@ else
   BREW_PREFIX="/home/linuxbrew/.linuxbrew"
 fi
 
+# Configure XDG development vars
+#   Ref: https://specifications.freedesktop.org/basedir/latest/
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+export XDG_CACHE_HOME="$HOME/.cache"
+
 # Editor
 export EDITOR="vi"
 export VISUAL="vi"
@@ -200,3 +207,6 @@ fi
 # Unset variables
 unset CUST_PROMPT STARSHIP_PRESET IS_DARWIN BREW_PREFIX
 export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
+
+# krew path
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
