@@ -321,6 +321,24 @@ create_vimrc_symlink() {
     fi
 }
 
+create_k9s_symlink() {
+    log_info "Checking k9s config symlink"
+    local k9s_config="$HOME/.config/k9s"
+    local k9s_repo_config="$BASE_DIR/configs/k9s"
+
+    if [ -d "$k9s_config" ]; then
+        if [ ! -L "$k9s_config" ]; then
+            log_warning "Backing up existing k9s config to $k9s_config.bak"
+            mv "$k9s_config" "$k9s_config.bak"
+        fi
+    fi
+
+    if [ ! -L "$k9s_config" ]; then
+        log_warning "Creating symlink for k9s config"
+        ln -sf "$k9s_repo_config" "$k9s_config"
+    fi
+}
+
 # Check for required commands for this script
 check_commands
 
@@ -338,6 +356,11 @@ fi
 # Neovim IDE Config Linking
 if command -v nvim &> /dev/null; then
     create_nvim_symlink
+fi
+
+# K9s Config Linking
+if command -v k9s &> /dev/null; then
+    create_k9s_symlink
 fi
 
 # WezTerm Terminal Config Linking
