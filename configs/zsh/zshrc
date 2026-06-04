@@ -3,6 +3,10 @@ if [ -f ~/.zsh_config_overrides ]; then
   source ~/.zsh_config_overrides
 fi
 
+# Terraprism - Set to use OpenTofu
+# Ref: https://github.com/CaptShanks/terraprism/blob/main/README.md
+export TERRAPRISM_TOFU=1
+
 # Choosing your custom prompt
 [ -z "${CUST_PROMPT}" ] && CUST_PROMPT="powerlevel10k" # can be "starship" or "powerlevel10k"
 [ -z "${STARSHIP_PRESET}" ] && STARSHIP_PRESET="pastel" # can be either "pastel", "tokyo-night", "rainbow"
@@ -210,3 +214,6 @@ export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
 
 # krew path
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+
+export PATH="$HOME/.local/bin:$PATH"
