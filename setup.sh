@@ -280,7 +280,7 @@ create_ghostty_symlink() {
     mkdir -pv "$HOME/.config/ghostty"
 
     if [ -f "$config" ]; then
-        if [ ! -L "$wezterm_config" ]; then
+        if [ ! -L "$config" ]; then
             log_warning "Backing up existing ghostty config to $config.bak"
             mv "$config" "$config.bak"
         fi
