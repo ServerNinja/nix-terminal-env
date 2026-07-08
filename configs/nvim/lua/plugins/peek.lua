@@ -6,6 +6,10 @@ return {
   "toppair/peek.nvim",
   ft = { "markdown" },
   build = "deno task --quiet build:fast",
+  keys = {
+    { "<leader>cg", "<cmd>PeekOpen<cr>",  desc = "Peek - Open preview" },
+    { "<leader>cG", "<cmd>PeekClose<cr>", desc = "Peek - Close preview" },
+  },
   config = function()
     require("peek").setup({
       auto_load = false,
