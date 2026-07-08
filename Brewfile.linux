@@ -33,3 +33,6 @@ brew "lsd"
 
 # neofetch
 brew "neofetch"
+
+# System monitoring
+brew "btop"

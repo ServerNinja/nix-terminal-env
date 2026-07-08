@@ -44,3 +44,6 @@ brew "wezterm"
 
 # neofetch
 brew "neofetch"
+
+# System monitoring
+brew "btop"
