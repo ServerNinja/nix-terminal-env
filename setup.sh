@@ -1,24 +1,84 @@
 #!/usr/bin/env bash
 # This script basically symlinks all the config files to the appropriate directories
 
-export GREEN=`tput setaf 2`
-export YELLOW=`tput setaf 3`
-export RED=`tput setaf 1`
-export RESET=`tput sgr0`
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+RED=$(tput setaf 1)
+RESET=$(tput sgr0)
 
 log_info() {
-  echo -e "$GREEN[INFO]: $@ $RESET"
+  echo -e "${GREEN}[INFO]: $* ${RESET}"
 }
 
 log_warning() {
-  echo -e "$YELLOW[WARN]: $@ $RESET"
+  echo -e "${YELLOW}[WARN]: $* ${RESET}"
 }
 
 log_error() {
-  echo -e "$RED[ERROR]: $@ $RESET"
+  echo -e "${RED}[ERROR]: $* ${RESET}"
 }
 
 BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# ---------------------------------------------------------------------------
+# Shared helpers
+# ---------------------------------------------------------------------------
+
+# link_config <src> <dest>
+#   Creates a symlink at <dest> pointing to <src>.
+#   - Skips if the symlink already points to <src>.
+#   - Removes stale symlinks (pointing elsewhere) before re-linking.
+#   - Backs up existing regular files or directories before replacing.
+#   - Creates parent directories as needed.
+link_config() {
+    local src="$1"
+    local dest="$2"
+
+    if [ ! -e "$src" ]; then
+        log_error "Source not found: $src"
+        return 1
+    fi
+
+    # Already correct — nothing to do
+    if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then
+        return 0
+    fi
+
+    # Stale symlink pointing elsewhere — replace it
+    if [ -L "$dest" ]; then
+        log_warning "Removing stale symlink: $dest -> $(readlink "$dest")"
+        rm -f "$dest"
+    elif [ -e "$dest" ]; then
+        log_warning "Backing up $dest to $dest.bak"
+        mv "$dest" "$dest.bak"
+    fi
+
+    mkdir -p "$(dirname "$dest")"
+    log_warning "Linking $dest -> $src"
+    ln -sf "$src" "$dest"
+}
+
+# clone_or_update <url> <dest> <label>
+#   Clones <url> into <dest> on first run; pulls updates on subsequent runs.
+clone_or_update() {
+    local url="$1"
+    local dest="$2"
+    local label="$3"
+
+    if [ -d "$dest/.git" ]; then
+        log_info "Updating $label"
+        git -C "$dest" pull --ff-only || log_warning "Could not update $label (offline or diverged?)"
+    else
+        log_warning "Cloning $label to $dest"
+        mkdir -p "$(dirname "$dest")"
+        if ! git clone "$url" "$dest"; then
+            log_error "Failed to clone $label from $url"
+            return 1
+        fi
+    fi
+}
+
+# ---------------------------------------------------------------------------
 
 vscode_key_repeating_issues() {
     if [[ "$(uname)" == "Darwin" ]]; then
@@ -33,70 +93,53 @@ vscode_key_repeating_issues() {
 }
 
 download_and_extract_font() {
-    log_info "Nerd Font Hack font..."
+    log_info "Checking Nerd Font Hack font..."
     local url="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Hack.zip"
     local extract_to="$HOME/.fonts"
     local zip_file="$extract_to/Hack.zip"
 
-    # Ensure the target directory exists
     mkdir -p "$extract_to"
 
     if ! ls ~/.fonts/HackNerdFont*.ttf &> /dev/null; then
-      log_info "Downloading Nerd Font Hack font..."
-      # Download the file
-      curl -L -o "$zip_file" "$url"
-  
-      # Extract the zip file
-      unzip -o "$zip_file" -d "$extract_to"
-  
-      # Clean up the zip file
-      rm "$zip_file"
-
+        log_info "Downloading Nerd Font Hack font..."
+        curl -L -o "$zip_file" "$url"
+        unzip -o "$zip_file" -d "$extract_to"
+        rm "$zip_file"
     fi
 
     if command -v fc-cache &> /dev/null; then
-      log_info "Using fc-cache command to update font cache"
-      fc-cache -f
+        log_info "Using fc-cache command to update font cache"
+        fc-cache -f
     else
-      log_error "fc-cache command not found. Please install fontconfig package."
+        log_error "fc-cache command not found. Please install fontconfig package."
     fi
 }
 
 replace_vscode_settings() {
     log_info "VSCode settings.json"
-    local settings_file=""
-    local vscode_settings_dir=""
+    local settings_file="$BASE_DIR/configs/vscode/settings.json"
+    local vscode_settings_dir
 
-    settings_file="$BASE_DIR/configs/vscode/settings.json"
     if [[ "$(uname)" == "Darwin" ]]; then
         vscode_settings_dir="$HOME/Library/Application Support/Code/User"
     else
         vscode_settings_dir="$HOME/.config/Code/User"
     fi
 
-    if [ -f "$settings_file" ]; then
-        if [ -f "$vscode_settings_dir/settings.json" ]; then
-            if [ ! -L "$vscode_settings_dir/settings.json" ]; then
-               log_warning "Backing up existing settings.json to settings.json.bak"
-               mv "$vscode_settings_dir/settings.json" "$vscode_settings_dir/settings.json.bak"
-            fi
-        fi
-
-        if [ ! -L "$vscode_settings_dir/settings.json" ]; then
-            log_warning "Linking settings.json to $vscode_settings_dir/settings.json"
-            ln -sf "$settings_file" "$vscode_settings_dir/settings.json"
-        fi
-    else
-        log_error "Error: vscode settings.json not found"
-        exit 1
+    if [ ! -f "$settings_file" ]; then
+        log_error "vscode settings.json not found in repo"
+        return 1
     fi
+
+    mkdir -p "$vscode_settings_dir"
+    link_config "$settings_file" "$vscode_settings_dir/settings.json"
 }
 
 check_commands() {
     log_info "Checking for required command line utilities"
-    commands=("git" "lolcat" "figlet")
+    local commands=("git" "lolcat" "figlet")
+    local missing_commands=()
 
-    missing_commands=()
     for cmd in "${commands[@]}"; do
         if ! command -v "$cmd" &> /dev/null; then
             missing_commands+=("$cmd")
@@ -104,7 +147,7 @@ check_commands() {
     done
 
     if [ ${#missing_commands[@]} -gt 0 ]; then
-        log_error "Missing commands: ${missing_commands[@]}"
+        log_error "Missing commands: ${missing_commands[*]}"
         if [[ "$(uname)" == "Darwin" ]]; then
             log_error "Please install the missing commands using Homebrew by running 'brew bundle' before running the setup script."
         else
@@ -116,230 +159,103 @@ check_commands() {
 
 check_figlet_fonts() {
     log_info "Checking for figlet-fonts repository"
-    local figlet_fonts_dir="$HOME/.local/share/figlet-fonts"
-
-    if [ ! -d "$figlet_fonts_dir" ]; then
-        log_warning "Cloning figlet-fonts repository to $figlet_fonts_dir"
-        git clone https://github.com/xero/figlet-fonts "$figlet_fonts_dir"
-    fi
+    clone_or_update "https://github.com/xero/figlet-fonts" "$HOME/.local/share/figlet-fonts" "figlet-fonts"
 }
 
 check_tmux_tpm_plugin() {
     log_info "Checking for tmux plugin manager"
-    # git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-    local tmux_plugin_dir="$HOME/.tmux/plugins"
-
-    # Check for the tmux plugin manager directory
-    if [ ! -d "$tmux_plugin_dir" ]; then
-        mkdir -p "$tmux_plugin_dir"
-    fi  
-
-    # Check for the tpm directory
-    if [ ! -d "$tmux_plugin_dir/tpm" ]; then
-        log_warning "Cloning tpm repository to $tmux_plugin_dir/tpm"
-        git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-    fi
+    mkdir -p "$HOME/.tmux/plugins"
+    clone_or_update "https://github.com/tmux-plugins/tpm" "$HOME/.tmux/plugins/tpm" "tpm"
 }
 
 link_zsh_files() {
     log_info "Linking zsh files"
-    files=("zshrc" "motd")
+    local files=("zshrc" "motd")
     for file in "${files[@]}"; do
-        if [ -f "$HOME/.$file" ]; then
-            if [ ! -L "$HOME/.$file" ]; then
-                log_warning "Backing up existing .$file to .$file.bak"
-                mv "$HOME/.$file" "$HOME/.$file.bak"
-            fi
-        fi
-        if [ ! -L "$HOME/.$file" ]; then
-            log_warning "Linking $file to $BASE_DIR/configs/zsh/.$file"
-            ln -sf "$BASE_DIR/configs/zsh/$file" "$HOME/.$file"
-        fi
+        link_config "$BASE_DIR/configs/zsh/$file" "$HOME/.$file"
     done
 }
 
 copy_zsh_overrides_config() {
-  log_info "Checking for ~/.zsh_config_overrides file"
-  overrides_file="$BASE_DIR/configs/zsh/zsh_config_overrides"
+    log_info "Checking for ~/.zsh_config_overrides file"
+    local overrides_file="$BASE_DIR/configs/zsh/zsh_config_overrides"
 
-  if [ ! -f "${HOME}/.zsh_config_overrides" ]; then
-    log_warning "Copying zsh_config_overrides to ~/.zsh_config_overrides"
-    cp "$overrides_file" "${HOME}/.zsh_config_overrides"
-  fi
+    if [ ! -f "${HOME}/.zsh_config_overrides" ]; then
+        log_warning "Copying zsh_config_overrides to ~/.zsh_config_overrides"
+        cp "$overrides_file" "${HOME}/.zsh_config_overrides"
+    fi
 }
 
 check_starship_config() {
-  log_info "Checking starship configs"
-  local starship_config_dir="$HOME/.config/"
-  local starship_repo_config_dir="$BASE_DIR/configs/starship"
+    log_info "Checking starship configs"
+    local starship_config_dir="$HOME/.config"
+    local starship_repo_config_dir="$BASE_DIR/configs/starship"
 
-  # Clean up existing symlinks and configs
-  rm -f $starship_config_dir/starship*.toml*
+    # Remove only symlinks matching starship*.toml — never delete real files
+    for f in "$starship_config_dir"/starship*.toml; do
+        [ -L "$f" ] && rm -f "$f"
+    done
 
-  pushd "$starship_config_dir" &> /dev/null
-
-  # Symlinking Starship configs
-  for config in $starship_repo_config_dir/*.toml; do
-    ln -s $config
-  done
-
-  popd &> /dev/null
+    for config in "$starship_repo_config_dir"/*.toml; do
+        ln -sf "$config" "$starship_config_dir/$(basename "$config")"
+    done
 }
 
 check_powerlevel10k_config() {
     log_info "Checking powerlevel10k config"
-    local powerlevel10k_config="$HOME/.p10k.zsh"
-    local powerlevel10k_repo_config="$BASE_DIR/configs/powerlevel10k/p10k.zsh"
-
-    if [ -f "$powerlevel10k_config" ]; then
-        if [ ! -L "$powerlevel10k_config" ]; then
-            log_warning "Backing up existing p10k.toml to p10k.toml.bak"
-            mv "$powerlevel10k_config" "$powerlevel10k_config.bak"
-        fi
-    fi
-
-    if [ ! -L "$powerlevel10k_config" ]; then
-       log_warning "Creating symlink for p10k.toml"
-       ln -sf "$powerlevel10k_repo_config" "$powerlevel10k_config"
-    fi
+    link_config "$BASE_DIR/configs/powerlevel10k/p10k.zsh" "$HOME/.p10k.zsh"
 }
 
 create_tmux_symlink() {
     log_info "Creating tmux config symlink"
-    local tmux_config="$HOME/.tmux.conf"
-    local tmux_repo_config="$BASE_DIR/configs/tmux/tmux.conf"
-
-    if [ -f "$tmux_config" ]; then
-        if [ -L "$tmux_config" ]; then
-            if ! [ "$(readlink "$tmux_config")" == "$tmux_repo_config" ]; then
-                rm -f "$tmux_config"
-            fi
-        else
-            log_warning "Backing up existing tmux config to $tmux_config.bak"
-            mv "$tmux_config" "$tmux_config.bak"
-        fi
-    fi
-
-    if [ ! -L "$tmux_config" ]; then
-        log_warning "Creating symlink for tmux config"
-        ln -sf "$tmux_repo_config" "$tmux_config"
-    fi
+    link_config "$BASE_DIR/configs/tmux/tmux.conf" "$HOME/.tmux.conf"
 }
 
 vim_plugins() {
-  VIM_PLUGINS_DIR="${HOME}/.vim/pack/plugins/start"
-  mkdir -p "${VIM_PLUGINS_DIR}"
-
-  if [ ! -d "${VIM_PLUGINS_DIR}/vim-tmux-navigator" ]; then
-    log_warning "Cloning vim-tmux-navigator repository to $${VIM_PLUGINS_DIR}/vim-tmux-navigator"
-    git clone git@github.com:christoomey/vim-tmux-navigator.git "${VIM_PLUGINS_DIR}/vim-tmux-navigator"
-  fi
+    local vim_plugins_dir="${HOME}/.vim/pack/plugins/start"
+    mkdir -p "${vim_plugins_dir}"
+    clone_or_update "https://github.com/christoomey/vim-tmux-navigator.git" "${vim_plugins_dir}/vim-tmux-navigator" "vim-tmux-navigator"
 }
 
 create_nvim_symlink() {
     log_info "Checking nvim config links"
-    local nvim_config="$HOME/.config/nvim"
-    local nvim_repo_config="$BASE_DIR/configs/nvim"
-
-    if [ -d "$nvim_config" ]; then
-        if [ ! -L "$nvim_config" ]; then
-           log_warning "Backing up existing nvim config to $nvim_config.bak"
-           mv "$nvim_config" "$nvim_config.bak"
-        fi
-    fi
-
-    if [ ! -L "$nvim_config" ]; then
-        log_warning "Creating symlink for nvim config"
-        ln -sf "$nvim_repo_config" "$nvim_config"
-    fi
+    link_config "$BASE_DIR/configs/nvim" "$HOME/.config/nvim"
 }
 
 create_wezterm_symlink() {
     log_info "Checking wezterm config links"
-    local wezterm_config="$HOME/.wezterm.lua"
-    local wezterm_repo_config="$BASE_DIR/configs/wezterm/wezterm.lua"
-
-    if [ -f "$wezterm_config" ]; then
-        if [ ! -L "$wezterm_config" ]; then
-            log_warning "Backing up existing wezterm config to $wezterm_config.bak"
-            mv "$wezterm_config" "$wezterm_config.bak"
-        fi
-    fi
-
-    if [ ! -L "$wezterm_config" ]; then
-        log_warning "Creating symlink for wezterm config"
-        ln -sf "$wezterm_repo_config" "$wezterm_config"
-    fi
+    link_config "$BASE_DIR/configs/wezterm/wezterm.lua" "$HOME/.wezterm.lua"
 }
 
 create_ghostty_symlink() {
     log_info "Checking ghostty config links"
-    local config="$HOME/.config/ghostty/config"
-    local repo_config="$BASE_DIR/configs/ghostty/config"
-
-    mkdir -pv "$HOME/.config/ghostty"
-
-    if [ -f "$config" ]; then
-        if [ ! -L "$config" ]; then
-            log_warning "Backing up existing ghostty config to $config.bak"
-            mv "$config" "$config.bak"
-        fi
-    fi
-
-    if [ ! -L "$config" ]; then
-        log_warning "Creating symlink for ghostty config"
-        ln -sf "$repo_config" "$config"
-    fi
+    link_config "$BASE_DIR/configs/ghostty/config" "$HOME/.config/ghostty/config"
 }
 
 copy_wezterm_overrides_config() {
-  config_file_location="$BASE_DIR/configs/wezterm"
-  overrides_file="wezterm_overrides.lua"
-  log_info "Checking for ~/.$overrides_file file"
+    log_info "Checking for ~/.wezterm_overrides.lua file"
+    local overrides_file="$BASE_DIR/configs/wezterm/wezterm_overrides.lua"
 
-  if [ ! -f "${HOME}/.$overrides_file" ]; then
-    log_warning "Copying $overrides_file to ~/.$overrides_file"
-    cp "$config_file_location/$overrides_file" "${HOME}/.$overrides_file"
-  fi
+    if [ ! -f "${HOME}/.wezterm_overrides.lua" ]; then
+        log_warning "Copying wezterm_overrides.lua to ~/.wezterm_overrides.lua"
+        cp "$overrides_file" "${HOME}/.wezterm_overrides.lua"
+    fi
 }
 
 create_vimrc_symlink() {
     log_info "Checking vimrc config symlink"
-    local vimrc_config="$HOME/.vimrc"
-    local vimrc_repo_config="$BASE_DIR/configs/vim/vimrc"
-
-    if [ -f "$vimrc_config" ]; then
-        if [ ! -L "$vimrc_config" ]; then
-            log_warning "Backing up existing vimrc config to $vimrc_config.bak"
-            mv "$vimrc_config" "$vimrc_config.bak"
-        fi
-    fi
-
-    if [ ! -L "$vimrc_config" ]; then
-        log_warning "Creating symlink for vimrc config"
-        ln -sf "$vimrc_repo_config" "$vimrc_config"
-    fi
+    link_config "$BASE_DIR/configs/vim/vimrc" "$HOME/.vimrc"
 }
 
 create_k9s_symlink() {
     log_info "Checking k9s config symlink"
-    local k9s_config="$HOME/.config/k9s"
-    local k9s_repo_config="$BASE_DIR/configs/k9s"
-
-    if [ -d "$k9s_config" ]; then
-        if [ ! -L "$k9s_config" ]; then
-            log_warning "Backing up existing k9s config to $k9s_config.bak"
-            mv "$k9s_config" "$k9s_config.bak"
-        fi
-    fi
-
-    if [ ! -L "$k9s_config" ]; then
-        log_warning "Creating symlink for k9s config"
-        ln -sf "$k9s_repo_config" "$k9s_config"
-    fi
+    link_config "$BASE_DIR/configs/k9s" "$HOME/.config/k9s"
 }
 
-# Check for required commands for this script
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+
 check_commands
 
 # Terminal Config Linking
@@ -348,9 +264,9 @@ copy_zsh_overrides_config
 check_figlet_fonts
 check_starship_config
 
-# Nerd Font for linux
+# Nerd Font for Linux
 if [[ "$(uname)" == "Linux" ]]; then
-  download_and_extract_font
+    download_and_extract_font
 fi
 
 # Neovim IDE Config Linking
@@ -369,7 +285,10 @@ if command -v wezterm &> /dev/null; then
     copy_wezterm_overrides_config
 fi
 
-create_ghostty_symlink
+# Ghostty Terminal Config Linking
+if command -v ghostty &> /dev/null; then
+    create_ghostty_symlink
+fi
 
 # VIM Plugins
 create_vimrc_symlink
@@ -380,11 +299,11 @@ if command -v tmux &> /dev/null; then
     create_tmux_symlink
     check_tmux_tpm_plugin
     check_powerlevel10k_config
-    
+
     log_warning "Please initialize tmux plugin manager by pressing 'prefix + I' in tmux..."
 fi
 
-# Stuff for VSCode IDE
+# VSCode IDE
 if [ -d "$HOME/Library/Application Support/Code/" ] || command -v code &> /dev/null; then
     vscode_key_repeating_issues
     replace_vscode_settings
