@@ -342,3 +342,15 @@ fi
 if is_enabled "$SETUP_K9S" && command -v k9s &> /dev/null; then
     create_k9s_symlink
 fi
+
+# ---------------------------------------------------------------------------
+# Post-install reminders
+# ---------------------------------------------------------------------------
+
+log_info "Setup complete."
+log_info "The following override files are machine-specific and not tracked by git."
+log_info "Review and edit them to customise this machine's environment:"
+echo ""
+echo "  ${YELLOW}~/.zsh_config_overrides${RESET}    — shell prompt, starship preset, MOTD style"
+echo "  ${YELLOW}~/.wezterm_overrides.lua${RESET}   — WezTerm font size, opacity, and other local tweaks"
+echo ""
