@@ -47,3 +47,6 @@ brew "neofetch"
 
 # System monitoring
 brew "btop"
+
+# Deno (required for peek.nvim markdown preview)
+brew "deno"
