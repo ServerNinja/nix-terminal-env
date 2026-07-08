@@ -21,6 +21,26 @@ log_error() {
 BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # ---------------------------------------------------------------------------
+# Load per-machine config
+# ---------------------------------------------------------------------------
+
+SETUP_CONF="$BASE_DIR/setup.conf"
+SETUP_CONF_TEMPLATE="$BASE_DIR/setup.conf.template"
+
+if [ ! -f "$SETUP_CONF" ]; then
+    log_warning "No setup.conf found — copying from template. Edit $SETUP_CONF to customise."
+    cp "$SETUP_CONF_TEMPLATE" "$SETUP_CONF"
+fi
+
+# shellcheck source=setup.conf.template
+source "$SETUP_CONF"
+
+# is_enabled <var> — returns true if the value is "true" or unset (default on)
+is_enabled() {
+    [[ "${1:-true}" == "true" ]]
+}
+
+# ---------------------------------------------------------------------------
 # Shared helpers
 # ---------------------------------------------------------------------------
 
@@ -258,55 +278,67 @@ create_k9s_symlink() {
 
 check_commands
 
-# Terminal Config Linking
-link_zsh_files
-copy_zsh_overrides_config
-check_figlet_fonts
-check_starship_config
+# Zsh
+if is_enabled "$SETUP_ZSH"; then
+    link_zsh_files
+    copy_zsh_overrides_config
+fi
 
-# Nerd Font for Linux
-if [[ "$(uname)" == "Linux" ]]; then
+# Starship prompt configs
+if is_enabled "$SETUP_STARSHIP"; then
+    check_starship_config
+fi
+
+# Figlet fonts
+if is_enabled "$SETUP_FIGLET_FONTS"; then
+    check_figlet_fonts
+fi
+
+# Nerd Font (Linux only)
+if is_enabled "$SETUP_NERD_FONTS" && [[ "$(uname)" == "Linux" ]]; then
     download_and_extract_font
 fi
 
-# Neovim IDE Config Linking
-if command -v nvim &> /dev/null; then
-    create_nvim_symlink
+# Ghostty
+if is_enabled "$SETUP_GHOSTTY" && command -v ghostty &> /dev/null; then
+    create_ghostty_symlink
 fi
 
-# K9s Config Linking
-if command -v k9s &> /dev/null; then
-    create_k9s_symlink
-fi
-
-# WezTerm Terminal Config Linking
-if command -v wezterm &> /dev/null; then
+# WezTerm
+if is_enabled "$SETUP_WEZTERM" && command -v wezterm &> /dev/null; then
     create_wezterm_symlink
     copy_wezterm_overrides_config
 fi
 
-# Ghostty Terminal Config Linking
-if command -v ghostty &> /dev/null; then
-    create_ghostty_symlink
+# Neovim
+if is_enabled "$SETUP_NVIM" && command -v nvim &> /dev/null; then
+    create_nvim_symlink
 fi
 
-# VIM Plugins
-create_vimrc_symlink
-vim_plugins
+# Vim
+if is_enabled "$SETUP_VIM"; then
+    create_vimrc_symlink
+    vim_plugins
+fi
 
-# Tmux Config Linking
-if command -v tmux &> /dev/null; then
+# VSCode
+if is_enabled "$SETUP_VSCODE"; then
+    if [ -d "$HOME/Library/Application Support/Code/" ] || command -v code &> /dev/null; then
+        vscode_key_repeating_issues
+        replace_vscode_settings
+        log_warning "Please open this directory in VSCode in order to get a prompt for recommended extensions..."
+    fi
+fi
+
+# Tmux
+if is_enabled "$SETUP_TMUX" && command -v tmux &> /dev/null; then
     create_tmux_symlink
     check_tmux_tpm_plugin
     check_powerlevel10k_config
-
     log_warning "Please initialize tmux plugin manager by pressing 'prefix + I' in tmux..."
 fi
 
-# VSCode IDE
-if [ -d "$HOME/Library/Application Support/Code/" ] || command -v code &> /dev/null; then
-    vscode_key_repeating_issues
-    replace_vscode_settings
-
-    log_warning "Please open this directory in VSCode in order to get a prompt for recommended extensions..."
+# k9s
+if is_enabled "$SETUP_K9S" && command -v k9s &> /dev/null; then
+    create_k9s_symlink
 fi

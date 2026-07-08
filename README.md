@@ -108,6 +108,18 @@ brew install deno
 - Pulls updates for managed git repos (tpm, figlet-fonts, vim-tmux-navigator)
 - Never overwrites your per-machine override files
 
+### Customising what gets installed
+
+On first run, `setup.sh` auto-copies `setup.conf.template` to `setup.conf`
+(ignored by git). Edit `setup.conf` to enable or disable individual sections
+for that machine — useful for servers that don't need a GUI terminal config,
+or machines where only a subset of tools is installed.
+
+```sh
+cp setup.conf.template setup.conf
+$EDITOR setup.conf
+```
+
 ## Other macOS Customizations
 
 ### Disable autocorrections

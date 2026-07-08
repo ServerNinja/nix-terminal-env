@@ -1,0 +1,64 @@
+# setup.conf — per-machine configuration for setup.sh
+#
+# Copy this file to setup.conf and edit as needed:
+#
+#   cp setup.conf.template setup.conf
+#
+# setup.conf is ignored by git so machine-specific changes won't cause
+# conflicts on git pull. setup.sh auto-copies this template on first run
+# if no setup.conf is found.
+#
+# All options default to true. Set to false to skip a section.
+
+# ---------------------------------------------------------------------------
+# Shell
+# ---------------------------------------------------------------------------
+
+# Zsh config: ~/.zshrc, ~/.motd, ~/.zsh_config_overrides
+SETUP_ZSH=true
+
+# Starship prompt preset configs (~/.config/starship-*.toml)
+SETUP_STARSHIP=true
+
+# Figlet font collection (cloned to ~/.local/share/figlet-fonts)
+SETUP_FIGLET_FONTS=true
+
+# Hack Nerd Font download and install (Linux only, skipped on macOS)
+SETUP_NERD_FONTS=true
+
+# ---------------------------------------------------------------------------
+# Terminal emulators
+# ---------------------------------------------------------------------------
+
+# Ghostty config (~/.config/ghostty/config)
+SETUP_GHOSTTY=true
+
+# WezTerm config (~/.wezterm.lua, ~/.wezterm_overrides.lua)
+SETUP_WEZTERM=true
+
+# ---------------------------------------------------------------------------
+# Editors
+# ---------------------------------------------------------------------------
+
+# Neovim config (~/.config/nvim/)
+SETUP_NVIM=true
+
+# Vim config (~/.vimrc) and vim-tmux-navigator plugin
+SETUP_VIM=true
+
+# VSCode settings.json
+SETUP_VSCODE=true
+
+# ---------------------------------------------------------------------------
+# Terminal multiplexer
+# ---------------------------------------------------------------------------
+
+# Tmux config (~/.tmux.conf), tpm plugin manager, and powerlevel10k prompt
+SETUP_TMUX=true
+
+# ---------------------------------------------------------------------------
+# Kubernetes
+# ---------------------------------------------------------------------------
+
+# k9s config (~/.config/k9s/)
+SETUP_K9S=true

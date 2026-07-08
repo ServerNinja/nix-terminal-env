@@ -2,3 +2,6 @@
 Brewfile*.lock.json
 
 lazy-lock.json
+
+# Per-machine setup configuration (copy from setup.conf.template)
+setup.conf
