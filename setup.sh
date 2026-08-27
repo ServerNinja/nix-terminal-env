@@ -272,11 +272,92 @@ create_k9s_symlink() {
     link_config "$BASE_DIR/configs/k9s" "$HOME/.config/k9s"
 }
 
+install_codex_cli() {
+    log_info "Checking Codex CLI..."
+
+    if command -v codex &> /dev/null; then
+        log_info "Codex CLI already installed: $(codex --version 2>/dev/null || echo "ok")"
+        return 0
+    fi
+
+    log_info "Installing Codex CLI..."
+    if ! (set -o pipefail; curl -fsSL https://chatgpt.com/codex/install.sh | sh); then
+        log_error "Codex CLI install failed"
+        log_error "Retry manually: curl -fsSL https://chatgpt.com/codex/install.sh | sh"
+        return 1
+    fi
+
+    if command -v codex &> /dev/null; then
+        log_info "Codex CLI installed: $(codex --version 2>/dev/null || echo "ok")"
+    else
+        log_warning "Codex CLI install completed but 'codex' was not found in PATH"
+        log_warning "Ensure ~/.local/bin is in your PATH (already configured in zshrc)"
+    fi
+}
+
+install_claude_code() {
+    log_info "Checking Claude Code CLI..."
+
+    if command -v claude &> /dev/null; then
+        log_info "Claude Code already installed: $(claude --version 2>/dev/null || echo "ok")"
+        return 0
+    fi
+
+    log_info "Installing Claude Code CLI..."
+    if ! (set -o pipefail; curl -fsSL https://claude.ai/install.sh | bash); then
+        log_error "Claude Code install failed"
+        log_error "Retry manually: curl -fsSL https://claude.ai/install.sh | bash"
+        return 1
+    fi
+
+    if command -v claude &> /dev/null; then
+        log_info "Claude Code installed: $(claude --version 2>/dev/null || echo "ok")"
+    else
+        log_warning "Claude Code install completed but 'claude' not found in PATH"
+    fi
+}
+
+install_cursor_cli() {
+    log_info "Checking Cursor CLI..."
+
+    if command -v cursor-agent &> /dev/null; then
+        log_info "Cursor CLI already installed: $(cursor-agent --version 2>/dev/null || echo "ok")"
+        return 0
+    fi
+
+    log_info "Installing Cursor CLI..."
+    if ! (set -o pipefail; curl -fsSL https://cursor.com/install | bash); then
+        log_error "Cursor CLI install failed"
+        log_error "Retry manually: https://cursor.com/docs/cli/installation"
+        return 1
+    fi
+
+    if command -v cursor-agent &> /dev/null; then
+        log_info "Cursor CLI installed: $(cursor-agent --version 2>/dev/null || echo "ok")"
+    else
+        log_warning "Cursor CLI install completed but 'cursor-agent' was not found in PATH"
+        log_warning "Ensure ~/.local/bin is in your PATH (already configured in zshrc)"
+    fi
+}
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
 check_commands
+
+# AI CLIs
+if is_enabled "$SETUP_CODEX_CLI"; then
+    install_codex_cli
+fi
+
+if is_enabled "$SETUP_CLAUDE_CODE"; then
+    install_claude_code
+fi
+
+if is_enabled "$SETUP_CURSOR_CLI"; then
+    install_cursor_cli
+fi
 
 # Zsh
 if is_enabled "$SETUP_ZSH"; then
@@ -354,3 +435,16 @@ echo ""
 echo "  ${YELLOW}~/.zsh_config_overrides${RESET}    — shell prompt, starship preset, MOTD style"
 echo "  ${YELLOW}~/.wezterm_overrides.lua${RESET}   — WezTerm font size, opacity, and other local tweaks"
 echo ""
+if is_enabled "$SETUP_CODEX_CLI" || is_enabled "$SETUP_CLAUDE_CODE" || is_enabled "$SETUP_CURSOR_CLI"; then
+    log_info "Authenticate AI CLIs on first use (browser login):"
+    if is_enabled "$SETUP_CODEX_CLI"; then
+        echo "  Run ${YELLOW}codex${RESET} once to authenticate Codex CLI"
+    fi
+    if is_enabled "$SETUP_CLAUDE_CODE"; then
+        echo "  Run ${YELLOW}claude${RESET} once to authenticate Claude Code"
+    fi
+    if is_enabled "$SETUP_CURSOR_CLI"; then
+        echo "  Run ${YELLOW}cursor-agent login${RESET} to authenticate Cursor CLI"
+    fi
+    echo ""
+fi

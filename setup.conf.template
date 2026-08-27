@@ -50,6 +50,19 @@ SETUP_VIM=true
 SETUP_VSCODE=true
 
 # ---------------------------------------------------------------------------
+# AI CLIs
+# ---------------------------------------------------------------------------
+
+# OpenAI Codex CLI (codex command)
+SETUP_CODEX_CLI=true
+
+# Claude Code CLI (claude command)
+SETUP_CLAUDE_CODE=true
+
+# Cursor CLI (cursor-agent command)
+SETUP_CURSOR_CLI=true
+
+# ---------------------------------------------------------------------------
 # Terminal multiplexer
 # ---------------------------------------------------------------------------
 

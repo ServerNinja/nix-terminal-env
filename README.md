@@ -84,6 +84,47 @@ curl -o "$VSCODE_DOWNLOAD" -L "https://code.visualstudio.com/sha/download?build=
 sudo dpkg -i "$VSCODE_DOWNLOAD"
 ```
 
+### AI CLIs (Codex + Claude Code + Cursor)
+
+All three are installed automatically when you run `./setup.sh` (enabled by default).
+Disable per machine in `setup.conf`:
+
+```sh
+SETUP_CODEX_CLI=false
+SETUP_CLAUDE_CODE=false
+SETUP_CURSOR_CLI=false
+```
+
+| Tool | Command | macOS / Linux installer |
+|------|---------|-------------------------|
+| Codex CLI | `codex` | Official standalone installer |
+| Claude Code | `claude` | Official native installer |
+| Cursor CLI | `cursor-agent` | Official CLI installer |
+
+Authentication is manual and per-user — run each command once after install to
+log in via your browser. `setup.sh` cannot script this step.
+
+Verify after install:
+
+```sh
+codex --version
+claude --version
+cursor-agent --version
+```
+
+The installers place their binaries under `~/.local/bin`, which this repo adds
+to `PATH`. To install one manually, use the same commands as `setup.sh`:
+
+```sh
+curl -fsSL https://chatgpt.com/codex/install.sh | sh
+curl -fsSL https://claude.ai/install.sh | bash
+curl -fsSL https://cursor.com/install | bash
+```
+
+See the [Codex CLI](https://learn.chatgpt.com/docs/codex/cli),
+[Claude Code](https://code.claude.com/docs/en/quickstart), and
+[Cursor CLI](https://docs.cursor.com/en/cli/installation) installation docs.
+
 ## Optional Dependencies
 
 **Rust**
@@ -107,6 +148,7 @@ brew install deno
 - Replaces stale symlinks (e.g. after moving the repo)
 - Pulls updates for managed git repos (tpm, figlet-fonts, vim-tmux-navigator)
 - Never overwrites your per-machine override files
+- Skips AI CLI installs when `codex`, `claude`, or `cursor-agent` is already on PATH
 
 ### Customising what gets installed
 
