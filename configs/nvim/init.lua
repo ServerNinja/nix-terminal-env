@@ -17,6 +17,18 @@ vim.opt.rtp:prepend(lazypath)
 
 local opts = {}
 
+-- Neovim 0.12's built-in Markdown ftplugin starts Tree-sitter automatically.
+-- Keep Tree-sitter enabled elsewhere, but use vim-markdown's legacy syntax for
+-- Markdown until the upstream highlighter crash is fixed.
+local treesitter_start = vim.treesitter.start
+vim.treesitter.start = function(buf, lang)
+  local bufnr = buf or 0
+  if lang == "markdown" or vim.bo[bufnr].filetype == "markdown" then
+    return
+  end
+  return treesitter_start(buf, lang)
+end
+
 -- Load options
 require("vim-options")
 require("keymaps")
