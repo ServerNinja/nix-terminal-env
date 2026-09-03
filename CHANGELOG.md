@@ -8,6 +8,20 @@ Versioning is [SemVer](https://semver.org/) applied to the environment as a
 whole: **major** for changes needing manual migration on each machine,
 **minor** for new tools or configs, **patch** for fixes that apply cleanly.
 
+## [Unreleased]
+
+### Fixed
+
+- `<C-k>` did not navigate panes while the cursor was in the nvim-tree
+  window. nvim-tree binds `<C-k>` buffer-locally to its Info popup, which
+  shadowed the global vim-tmux-navigator mapping. The tree's `<C-k>` is now
+  deleted in `on_attach` and Info moved to `i`. `<C-h>`, `<C-j>` and `<C-l>`
+  were never affected — `<C-k>` is the only one nvim-tree claims.
+- No completion popup when typing `:` in Neovim. nvim-cmp was gated on
+  `event = "InsertEnter"` only, so entering the cmdline never loaded the
+  plugin and the `cmp.setup.cmdline(":")` / `("/")` blocks in its config
+  never ran. The trigger is now `{ "InsertEnter", "CmdlineEnter" }`.
+
 ## [1.0.0] - 2026-09-03
 
 First tracked version. Baselines the environment across macOS and Linux and

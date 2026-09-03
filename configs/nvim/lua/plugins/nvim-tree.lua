@@ -29,6 +29,13 @@ return {
 
       -- your removals and mappings go here
       vim.keymap.del("n", "f", { buffer = bufnr })
+
+      -- nvim-tree binds <C-k> to its Info popup, which shadows the global
+      -- <C-k> used for vim-tmux-navigator pane navigation. Drop it and move
+      -- Info to "i" (free in nvim-tree's default map; only "I" is taken).
+      vim.keymap.del("n", "<C-k>", { buffer = bufnr })
+      vim.keymap.set("n", "i", api.node.show_info_popup, opts("Info"))
+
       -- remap the default keybindings
       vim.keymap.set("n", "\\", api.live_filter.start, opts("Live Filter: Start"))
 

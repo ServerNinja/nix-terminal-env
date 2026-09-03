@@ -4,7 +4,10 @@
 -- Link: https://github.com/hrsh7th/nvim-cmp
 return {
   "hrsh7th/nvim-cmp",
-  event = "InsertEnter",
+  -- CmdlineEnter is required for the cmp.setup.cmdline() blocks below to ever
+  -- run; with InsertEnter alone, typing ":" never loads the plugin and the
+  -- cmdline gets no completion popup.
+  event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
     -- source for file system paths
     "hrsh7th/cmp-path",
