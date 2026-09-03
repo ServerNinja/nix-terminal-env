@@ -3,6 +3,9 @@
 Personal terminal environment and development tool configurations, maintained
 across macOS, Debian Linux desktop, and home lab Linux servers.
 
+Current version: see [`VERSION`](VERSION). Changes and per-machine upgrade
+steps are recorded in [`CHANGELOG.md`](CHANGELOG.md).
+
 ## What's Included
 
 | Config | Managed file(s) |
@@ -174,6 +177,7 @@ brew install deno
 - Never overwrites your per-machine override files
 - Skips AI CLI installs when `codex`, `claude`, or `cursor-agent` is already on PATH
 - Skips the tfswitch install when `tfswitch` is already on PATH
+- Converges Neovim plugins to the tracked `lazy-lock.json` (`SETUP_NVIM_SYNC`)
 
 ### Customising what gets installed
 
@@ -186,6 +190,28 @@ or machines where only a subset of tools is installed.
 cp setup.conf.template setup.conf
 $EDITOR setup.conf
 ```
+
+## Neovim plugin versions
+
+`configs/nvim/lazy-lock.json` is **tracked in git**, so every machine runs
+identical plugin versions. `./setup.sh` applies it by running `:Lazy clean`,
+`:Lazy install`, and `:Lazy restore` headlessly. Disable that step per machine
+with `SETUP_NVIM_SYNC=false` in `setup.conf`.
+
+Updating plugins is deliberate, not automatic:
+
+```sh
+nvim                     # then :Lazy update, and verify things still work
+cd path/to/this/repo
+git add configs/nvim/lazy-lock.json
+git commit -m "Update nvim plugins"
+```
+
+Other machines pick the new versions up on their next `git pull && ./setup.sh`.
+Avoid `:Lazy sync` in scripts — it updates plugins and defeats the lockfile.
+
+See [`CHANGELOG.md`](CHANGELOG.md) for the current Neovim version requirement
+and the list of deferred plugin migrations.
 
 ## Other macOS Customizations
 

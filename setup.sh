@@ -19,6 +19,7 @@ log_error() {
 }
 
 BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+REPO_VERSION="$(cat "$BASE_DIR/VERSION" 2>/dev/null || echo "unknown")"
 
 # ---------------------------------------------------------------------------
 # Load per-machine config
@@ -384,6 +385,31 @@ install_cursor_cli() {
     fi
 }
 
+nvim_plugin_sync() {
+    log_info "Syncing Neovim plugins to lazy-lock.json"
+
+    if ! command -v nvim &> /dev/null; then
+        log_warning "nvim not found; skipping plugin sync"
+        return 0
+    fi
+
+    # clean   -> drop plugins no longer in the specs
+    # install -> fetch anything new
+    # restore -> check out the exact commits in lazy-lock.json
+    # restore is what keeps every machine on identical plugin versions. Do not
+    # swap it for `sync`, which would update plugins and defeat the lockfile.
+    local out
+    if ! out=$(nvim --headless "+Lazy! clean" "+Lazy! install" "+Lazy! restore" +qa 2>&1); then
+        log_error "Neovim plugin sync failed"
+        echo "$out" | tail -20
+        log_error "Retry manually in nvim: :Lazy clean, then :Lazy restore"
+        return 1
+    fi
+
+    log_info "Neovim plugins match lazy-lock.json"
+    log_warning "Run ':checkhealth' in nvim to verify (see CHANGELOG.md)"
+}
+
 install_tfswitch() {
     log_info "Checking tfswitch..."
 
@@ -413,6 +439,8 @@ install_tfswitch() {
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
+
+log_info "Applying nix-terminal-env $REPO_VERSION"
 
 check_commands
 
@@ -469,6 +497,11 @@ fi
 # Neovim
 if is_enabled "$SETUP_NVIM" && command -v nvim &> /dev/null; then
     create_nvim_symlink
+
+    # Must run after the symlink so lazy.nvim reads this repo's specs
+    if is_enabled "$SETUP_NVIM_SYNC"; then
+        nvim_plugin_sync
+    fi
 fi
 
 # Vim
@@ -503,7 +536,7 @@ fi
 # Post-install reminders
 # ---------------------------------------------------------------------------
 
-log_info "Setup complete."
+log_info "Setup complete — nix-terminal-env $REPO_VERSION"
 log_info "The following override files are machine-specific and not tracked by git."
 log_info "Review and edit them to customise this machine's environment:"
 echo ""

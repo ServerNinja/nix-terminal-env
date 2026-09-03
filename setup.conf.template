@@ -43,6 +43,11 @@ SETUP_WEZTERM=true
 # Neovim config (~/.config/nvim/)
 SETUP_NVIM=true
 
+# Converge Neovim plugins to the tracked lazy-lock.json on every setup.sh run
+# (runs ':Lazy clean', ':Lazy install', ':Lazy restore' headlessly).
+# Requires SETUP_NVIM above. Set false to manage plugins manually.
+SETUP_NVIM_SYNC=true
+
 # Vim config (~/.vimrc) and vim-tmux-navigator plugin
 SETUP_VIM=true
 

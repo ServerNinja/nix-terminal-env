@@ -24,15 +24,24 @@ platform-specific work with `[[ "$(uname)" == "Darwin" ]]`. Don't assume a GUI.
 
 ## Adding an installed tool
 
-Four places, or it's half-done:
+Five places, or it's half-done:
 1. `install_<tool>()` in `setup.sh`
 2. An `is_enabled "$SETUP_<TOOL>"` gate in the Main section
 3. `SETUP_<TOOL>=true` in `setup.conf.template`
 4. A README section
+5. A `CHANGELOG.md` entry
 
 `setup.conf` is gitignored and never regenerated, so existing machines won't
 have the new toggle — `is_enabled` treats **unset as enabled**, which is what
 makes that safe. Don't add the toggle to `setup.conf` itself.
+
+## Versioning
+
+`VERSION` holds the environment version; `CHANGELOG.md` records what changed.
+Any change that a *different machine* has to react to needs a changelog entry
+under `## [Unreleased]` (create it if absent), including the manual steps
+required. Bump `VERSION` when cutting a release: major if machines need manual
+migration, minor for new tools/configs, patch for clean-applying fixes.
 
 ## setup.sh conventions
 
@@ -51,4 +60,10 @@ makes that safe. Don't add the toggle to `setup.conf` itself.
 `configs/nvim/` uses lazy.nvim with `{ import = "plugins" }`: one file per
 plugin in `configs/nvim/lua/plugins/`, each returning a spec table. Options
 live in `lua/vim-options.lua`, keymaps in `lua/keymaps.lua`.
-`lazy-lock.json` is gitignored — plugin versions are intentionally per-machine.
+**`lazy-lock.json` is tracked in git** and is the source of truth for plugin
+versions across machines. Never edit it by hand.
+- To apply the repo's versions: `./setup.sh` (or `:Lazy restore`).
+- To update plugins: `:Lazy update`, verify, then **commit the lockfile** in the
+  same change as any spec edits it required.
+- Never use `:Lazy sync` in scripts — it updates plugins, defeating the
+  lockfile. `setup.sh` uses `clean` + `install` + `restore` deliberately.
