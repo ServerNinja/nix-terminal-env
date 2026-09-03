@@ -1,2 +1,27 @@
-" Configure system clipboard integration
-set clipboard=unnamedplus
+" Keep yanks, deletes and puts in sync with the system clipboard, matching
+" the Neovim config's `clipboard = 'unnamedplus'`.
+"
+" This has to branch by platform. The "unnamedplus" flag uses the '+'
+" register, which requires the +X11 or +wayland_clipboard feature. macOS vim
+" ships +clipboard but no X11, so '+' is never wired to the pasteboard and
+" "unnamedplus" silently does nothing there — only '*' works. Vim exposes
+" has('unnamedplus') precisely for this test.
+"
+"   Linux (X11/Wayland) : unnamedplus,unnamed
+"                         puts read CLIPBOARD, yanks also copy to PRIMARY
+"   macOS               : unnamed
+"                         the '*' register is the system pasteboard
+if has('clipboard_working') || has('clipboard')
+  if has('unnamedplus')
+    set clipboard=unnamedplus,unnamed
+  else
+    set clipboard=unnamed
+  endif
+endif
+
+" If yanks still do not reach the system clipboard, this vim was built
+" without clipboard support. Check with:
+"   vim --version | grep -o '[+-]clipboard'
+" A '-clipboard' build needs a different package — on Debian the default vim
+" is commonly built without it, and vim-gtk3 provides a build with +clipboard
+" and +X11. Neovim is unaffected; it shells out to a clipboard provider.

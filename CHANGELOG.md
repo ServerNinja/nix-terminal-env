@@ -8,10 +8,18 @@ Versioning is [SemVer](https://semver.org/) applied to the environment as a
 whole: **major** for changes needing manual migration on each machine,
 **minor** for new tools or configs, **patch** for fixes that apply cleanly.
 
-## [Unreleased]
+## [1.1.0] - 2026-09-03
 
 ### Fixed
 
+- Plain `vim` never shared the system clipboard. `configs/vim/vimrc` set
+  `clipboard=unnamedplus`, but that flag uses the `+` register, which needs
+  the `+X11` or `+wayland_clipboard` feature; macOS vim has `+clipboard` and
+  no X11, so the setting silently did nothing and only `*` was ever wired to
+  the pasteboard. The vimrc now branches on `has('unnamedplus')`:
+  `unnamedplus,unnamed` on X11/Wayland, `unnamed` on macOS. Neovim was never
+  affected because it uses a clipboard provider (`pbcopy`/`pbpaste`) rather
+  than X11, which is why it worked and vim did not.
 - `<C-k>` did not navigate panes while the cursor was in the nvim-tree
   window. nvim-tree binds `<C-k>` buffer-locally to its Info popup, which
   shadowed the global vim-tmux-navigator mapping. The tree's `<C-k>` is now
@@ -21,6 +29,27 @@ whole: **major** for changes needing manual migration on each machine,
   `event = "InsertEnter"` only, so entering the cmdline never loaded the
   plugin and the `cmp.setup.cmdline(":")` / `("/")` blocks in its config
   never ran. The trigger is now `{ "InsertEnter", "CmdlineEnter" }`.
+
+### Upgrading to 1.1.0
+
+```sh
+git pull && ./setup.sh
+```
+
+No plugin versions changed, so `lazy-lock.json` is untouched — this is config
+only. Two caveats:
+
+- Restart Neovim for the nvim-cmp and nvim-tree keymap changes to take effect.
+- On Debian, plain `vim` may still not reach the clipboard after this. The
+  default `vim` package is commonly built without clipboard support, which no
+  setting can work around. Check with:
+
+  ```sh
+  vim --version | grep -o '[+-]clipboard'
+  ```
+
+  A `-clipboard` build needs a different package; `vim-gtk3` provides one with
+  `+clipboard` and `+X11`. Neovim is unaffected either way.
 
 ## [1.0.0] - 2026-09-03
 

@@ -57,6 +57,12 @@ sudo apt-get install -y build-essential zsh git wget curl nodejs ncal unzip xsel
 # libwebkit2gtk-4.0-dev is required for the peek.nvim markdown preview plugin.
 # On Debian 12 (Bookworm) or newer, use libwebkit2gtk-4.1-dev instead.
 
+# For system-clipboard support in plain `vim`, check that the build has it:
+#   vim --version | grep -o '[+-]clipboard'
+# A '-clipboard' build cannot talk to the clipboard at all; install a build
+# that can (vim-gtk3 provides +clipboard and +X11). Neovim is unaffected —
+# it shells out to a clipboard provider instead of needing X11.
+
 # Install WezTerm
 curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
 echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list
