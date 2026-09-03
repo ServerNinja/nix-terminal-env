@@ -132,9 +132,21 @@ if command -v podman &> /dev/null && ! command -v docker &> /dev/null; then
     }
 fi
 
-# Alias nerd-ls to ls if installed
+# Use nerd-ls for ls if installed; fall back to /bin/ls when passed a file path
+# (nerd-ls only handles directories and errors on plain files)
 if [ -L "$BREW_PREFIX/bin/nerd-ls" ] &> /dev/null; then
-  alias ls='nerd-ls -i'
+  ls() {
+    local fallback=0
+    for arg in "$@"; do
+      [[ "$arg" == -* ]] && continue
+      [[ -e "$arg" && ! -d "$arg" ]] && { fallback=1; break }
+    done
+    if [[ $fallback -eq 1 ]]; then
+      /bin/ls "$@"
+    else
+      nerd-ls -i "$@"
+    fi
+  }
 elif command -v lsd &> /dev/null ; then
   alias ls='lsd'
 fi
