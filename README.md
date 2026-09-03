@@ -125,6 +125,30 @@ See the [Codex CLI](https://learn.chatgpt.com/docs/codex/cli),
 [Claude Code](https://code.claude.com/docs/en/quickstart), and
 [Cursor CLI](https://docs.cursor.com/en/cli/installation) installation docs.
 
+### tfswitch (Terraform / OpenTofu version switcher)
+
+Installed automatically by `./setup.sh` on both macOS and Linux (enabled by
+default). Disable per machine in `setup.conf`:
+
+```sh
+SETUP_TFSWITCH=false
+```
+
+The official installer covers `darwin` and `linux` on both `amd64` and `arm64`,
+and `setup.sh` points it at `~/.local/bin` so no `sudo` is required:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh \
+  | bash -s -- -b "$HOME/.local/bin"
+```
+
+Verify with `tfswitch --version`. Run `tfswitch` in a directory to pick a
+Terraform version, or `tfswitch --tofu` for OpenTofu — this environment leans
+OpenTofu: `zshrc` exports `TERRAPRISM_TOFU=1` and the `tf_lint` helper shells
+out to `tofu fmt`.
+
+See the [tfswitch docs](https://warrensbox.github.io/terraform-switcher).
+
 ## Optional Dependencies
 
 **Rust**
@@ -149,6 +173,7 @@ brew install deno
 - Pulls updates for managed git repos (tpm, figlet-fonts, vim-tmux-navigator)
 - Never overwrites your per-machine override files
 - Skips AI CLI installs when `codex`, `claude`, or `cursor-agent` is already on PATH
+- Skips the tfswitch install when `tfswitch` is already on PATH
 
 ### Customising what gets installed
 

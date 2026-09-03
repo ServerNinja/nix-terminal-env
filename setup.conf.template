@@ -63,6 +63,13 @@ SETUP_CLAUDE_CODE=true
 SETUP_CURSOR_CLI=true
 
 # ---------------------------------------------------------------------------
+# Infrastructure tooling
+# ---------------------------------------------------------------------------
+
+# tfswitch — Terraform/OpenTofu version switcher (installed to ~/.local/bin)
+SETUP_TFSWITCH=true
+
+# ---------------------------------------------------------------------------
 # Terminal multiplexer
 # ---------------------------------------------------------------------------
 

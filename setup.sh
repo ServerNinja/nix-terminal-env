@@ -340,6 +340,32 @@ install_cursor_cli() {
     fi
 }
 
+install_tfswitch() {
+    log_info "Checking tfswitch..."
+
+    if command -v tfswitch &> /dev/null; then
+        log_info "tfswitch already installed: $(tfswitch --version 2>/dev/null || echo "ok")"
+        return 0
+    fi
+
+    # Official installer covers darwin/linux on amd64 and arm64.
+    # -b keeps it in ~/.local/bin so no sudo is needed (already on PATH via zshrc).
+    log_info "Installing tfswitch..."
+    local install_url="https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh"
+    if ! (set -o pipefail; curl -fsSL "$install_url" | bash -s -- -b "$HOME/.local/bin"); then
+        log_error "tfswitch install failed"
+        log_error "Retry manually: curl -fsSL $install_url | bash -s -- -b \"\$HOME/.local/bin\""
+        return 1
+    fi
+
+    if command -v tfswitch &> /dev/null; then
+        log_info "tfswitch installed: $(tfswitch --version 2>/dev/null || echo "ok")"
+    else
+        log_warning "tfswitch install completed but 'tfswitch' was not found in PATH"
+        log_warning "Ensure ~/.local/bin is in your PATH (already configured in zshrc)"
+    fi
+}
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -357,6 +383,11 @@ fi
 
 if is_enabled "$SETUP_CURSOR_CLI"; then
     install_cursor_cli
+fi
+
+# Terraform / OpenTofu version switcher
+if is_enabled "$SETUP_TFSWITCH"; then
+    install_tfswitch
 fi
 
 # Zsh
