@@ -80,21 +80,65 @@ link_config() {
 
 # clone_or_update <url> <dest> <label>
 #   Clones <url> into <dest> on first run; pulls updates on subsequent runs.
+#   Recovers automatically when upstream renames its default branch (the
+#   master -> main migration), which otherwise breaks `pull` forever.
 clone_or_update() {
     local url="$1"
     local dest="$2"
     local label="$3"
 
-    if [ -d "$dest/.git" ]; then
-        log_info "Updating $label"
-        git -C "$dest" pull --ff-only || log_warning "Could not update $label (offline or diverged?)"
-    else
+    if [ ! -d "$dest/.git" ]; then
         log_warning "Cloning $label to $dest"
         mkdir -p "$(dirname "$dest")"
         if ! git clone "$url" "$dest"; then
             log_error "Failed to clone $label from $url"
             return 1
         fi
+        return 0
+    fi
+
+    log_info "Updating $label"
+
+    local pull_output
+    if pull_output=$(git -C "$dest" pull --ff-only 2>&1); then
+        return 0
+    fi
+
+    # Pull failed. Never touch a checkout with local edits.
+    if [ -n "$(git -C "$dest" status --porcelain)" ]; then
+        log_warning "$label has local changes; leaving it alone"
+        return 0
+    fi
+
+    if ! git -C "$dest" fetch --quiet --prune origin 2>/dev/null; then
+        log_warning "Could not fetch $label (offline?)"
+        return 0
+    fi
+
+    # Ask the remote what its default branch is now
+    git -C "$dest" remote set-head origin --auto > /dev/null 2>&1
+    local default_branch
+    default_branch=$(git -C "$dest" symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null)
+    default_branch="${default_branch#origin/}"
+
+    if [ -z "$default_branch" ]; then
+        log_warning "Could not update $label and could not determine its default branch"
+        echo "$pull_output" | sed 's/^/    /'
+        return 0
+    fi
+
+    local current_branch
+    current_branch=$(git -C "$dest" rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+    if [ "$current_branch" != "$default_branch" ]; then
+        log_warning "$label: upstream default branch is now '$default_branch' (was '$current_branch')"
+    fi
+
+    if git -C "$dest" checkout --quiet -B "$default_branch" --track "origin/$default_branch" 2>/dev/null; then
+        log_info "$label re-pointed at origin/$default_branch"
+    else
+        log_warning "Could not update $label (offline or diverged?)"
+        echo "$pull_output" | sed 's/^/    /'
     fi
 }
 
