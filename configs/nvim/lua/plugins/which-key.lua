@@ -6,7 +6,12 @@ return {
   "folke/which-key.nvim",
   event = "VeryLazy",
   opts = {
-    -- This isn't working for some reason --- ? WTF
+    -- Sort everything alphanumerically. The default is
+    -- { "local", "order", "group", "alphanum", "mod" }; both "group" (forces
+    -- groups to the end) and "local" (hoists buffer-local maps like <leader>o
+    -- for Oil) break key order, so they are dropped. "order" is kept because
+    -- which-key plugins (marks, registers) rely on it for meaningful order.
+    sort = { "order", "alphanum", "mod" },
     win = {
 --      no_overlap = true,
       border = "single",
@@ -29,7 +34,8 @@ return {
    
     wk.add({
     -- group renames
-      { "<leader>C", group = "Copilot Chat" },
+      { "<leader>c", group = "Markdown Preview", icon = { icon = "", color = "orange" } },
+      { "<leader>f", group = "Find (Telescope)", icon = { icon = "", color = "yellow" } },
       { "<leader>l", group = "Lazy"},
       { "<leader>n", group = "Window Navigation", icon = { icon = "", color = "azure" } },
       { "<leader>s", group = "Split", icon = { icon = "", color = "purple" } },

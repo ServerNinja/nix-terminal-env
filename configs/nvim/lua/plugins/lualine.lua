@@ -9,7 +9,8 @@ return {
     require('lualine').setup({
       options = {
         icons_enabled = true,
-        theme = 'dracula',
+        -- 'auto' follows the active colorscheme, which auto-dark-mode swaps
+        theme = 'auto',
         component_separators = { left = '', right = ''},
         section_separators = { left = '', right = ''},
         disabled_filetypes = {
@@ -47,7 +48,16 @@ return {
         lualine_a = {'mode'},
         lualine_b = {'branch', 'diff', 'diagnostics'},
         lualine_c = {'filename'},
-        lualine_x = {'encoding', 'fileformat', 'filetype'},
+        lualine_x = {
+          -- Pending plugin updates, shown only when there are any.
+          -- Replaces lazy.nvim's blocking startup notification.
+          {
+            function() return require('lazy.status').updates() end,
+            cond = function() return require('lazy.status').has_updates() end,
+            color = { fg = '#ff9e64' },
+          },
+          'encoding', 'fileformat', 'filetype'
+        },
         lualine_y = {'progress'},
         lualine_z = {'location'}
       },

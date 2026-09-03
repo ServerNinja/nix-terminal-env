@@ -1,7 +1,8 @@
 *.swp
 Brewfile*.lock.json
 
-lazy-lock.json
+# NOTE: configs/nvim/lazy-lock.json is intentionally TRACKED so every machine
+# runs identical plugin versions. Sync with ./setup.sh or ':Lazy restore'.
 
 # Per-machine setup configuration (copy from setup.conf.template)
 setup.conf

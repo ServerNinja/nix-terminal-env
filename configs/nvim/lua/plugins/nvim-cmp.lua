@@ -62,7 +62,7 @@ return {
         ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
         ["<C-e>"] = cmp.mapping.abort(), -- close completion window
         ["<CR>"] = cmp.mapping.confirm({ select = false }),
-        -- copilot cmp
+        -- Tab cycles the completion menu when there is a word before the cursor
         ["<Tab>"] = vim.schedule_wrap(function(fallback)
           if cmp.visible() and has_words_before() then
             cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
@@ -72,22 +72,8 @@ return {
         end),
       }),
       -- sources for autocompletion
-      -- sources = cmp.config.sources({
-      -- 	-- Copilot Source
-      -- 	{
-      -- 		{ name = "copilot" },
-      -- 	},
-      -- 	{
-      -- 		{ name = "nvim_lsp" },
-      -- 		{ name = "luasnip" }, -- snippets
-      -- 		{ name = "buffer" }, -- text within current buffer
-      -- 		{ name = "path" }, -- file system paths
-      -- 	},
-      -- }),
 
       sources = {
-        -- Copilot Source
-        -- { name = "copilot", group_index = 2 },
         -- Other Sources
         { name = "nvim_lsp", group_index = 2 },
         { name = "path", group_index = 2 },
@@ -100,7 +86,6 @@ return {
         format = lspkind.cmp_format({
           maxwidth = 50,
           ellipsis_char = "...",
-          symbol_map = { Copilot = "" },
         }),
       },
     })

@@ -3,7 +3,7 @@ vim.wo.number = true
 
 -- Lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     "git",
     "clone",
@@ -51,7 +51,11 @@ require("lazy").setup({
   },
   checker = {
     enabled = true,
+    -- notify = true prints every pending plugin on startup and blocks on a
+    -- hit-enter prompt. The count is shown in the lualine winbar instead
+    -- (see lua/plugins/lualine.lua); run :Lazy check or :Lazy for details.
     notify = false,
+    frequency = 86400, -- once a day is plenty for a shared lockfile
   },
   change_detection = {
     notify = false,

@@ -8,19 +8,19 @@ keymap.set('n', '<C-n>', ':NvimTreeFocus<CR>')
 keymap.set('n', '<leader>lg', '<cmd>LazyGit<cr>', {desc = "LazyGit"})
 
 -- Telescope
-keymap.set('n', '<C-p>', '<cmd>Telescope find_files<cr>', {})
-
--- Rust
-local bufnr = vim.api.nvim_get_current_buf()
-vim.keymap.set(
-  "n", 
-  "<leader>a", 
-  function()
-    vim.cmd.RustLsp('codeAction') -- supports rust-analyzer's grouping
-    -- or vim.lsp.buf.codeAction() if you don't want grouping.
-  end,
-  { silent = true, buffer = bufnr }
-)
+-- <cmd> strings (rather than require('telescope.builtin')) keep these
+-- lazy-safe: the :Telescope command loads the plugin on first use.
+keymap.set('n', '<C-p>', '<cmd>Telescope find_files<cr>', { desc = "Telescope - Find files" })
+keymap.set('n', '<leader>ff', '<cmd>Telescope find_files<cr>', { desc = "Find files" })
+keymap.set('n', '<leader>fg', '<cmd>Telescope live_grep<cr>', { desc = "Live grep (ripgrep)" })
+keymap.set('n', '<leader>fb', '<cmd>Telescope buffers<cr>', { desc = "Find open buffers" })
+keymap.set('n', '<leader>fo', '<cmd>Telescope oldfiles<cr>', { desc = "Recently opened files" })
+keymap.set('n', '<leader>fw', '<cmd>Telescope grep_string<cr>', { desc = "Grep word under cursor" })
+keymap.set('n', '<leader>fh', '<cmd>Telescope help_tags<cr>', { desc = "Search help tags" })
+keymap.set('n', '<leader>fd', '<cmd>Telescope diagnostics<cr>', { desc = "Search diagnostics" })
+keymap.set('n', '<leader>fk', '<cmd>Telescope keymaps<cr>', { desc = "Search keymaps" })
+keymap.set('n', '<leader>fr', '<cmd>Telescope resume<cr>', { desc = "Resume last picker" })
+keymap.set('n', '<leader>f/', '<cmd>Telescope current_buffer_fuzzy_find<cr>', { desc = "Fuzzy find in buffer" })
 
 -- WINDOW MANAGEMENT
 keymap.set("n", "<leader>sv", "<C-w>s", { desc = "Split window vertically" }) -- split window vertically
@@ -34,10 +34,6 @@ keymap.set("n", "<leader>nk", "<C-w>k", { desc = "Window - Move up" }) -- window
 keymap.set("n", "<leader>nj", "<C-w>j", { desc = "Window - Move down" }) -- window nav - move down
 keymap.set("n", "<leader>nh", "<C-w>h", { desc = "Window - Move left" }) -- window nav - move left
 keymap.set("n", "<leader>nl", "<C-w>l", { desc = "Window - Move right" }) -- window nav - move right
-
--- Copilot
-keymap.set("n", "<leader>Ct", function() require("CopilotChat").toggle() end, { desc = "Copilot - Toggle" })
-keymap.set("n", "<leader>Cq", function() require("CopilotChat").ask(input, { selection = require("CopilotChat.select").buffer }) end, { desc = "Copilot - Quick Chat" })
 
 keymap.set('n', "<leader>nm", function() require('nvim-window').pick() end, {desc = "nvim-window: Jump to window"})
 
