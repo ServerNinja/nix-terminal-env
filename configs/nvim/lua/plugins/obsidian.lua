@@ -10,13 +10,15 @@
 --
 -- Keymaps live in lua/keymaps.lua under the <leader>m prefix.
 
--- Vault paths are macOS-specific, so only offer the ones that exist on this
--- machine. On a box with no vaults the plugin installs but never activates.
+-- Vault paths differ per machine, so only offer the ones that exist on this
+-- one. On a box with no vaults the plugin installs but never activates.
 local function workspaces()
   local candidates = {
-    { name = 'spirituality', path = '~/Documents/Obsidian-Spirituality/Spirituality' },
-    { name = 'main',         path = '~/Documents/Obsidian' },
-    { name = 'testing',      path = '~/Documents/Obsidian-Testing/Testing' },
+    { name = 'spirituality',        path = '~/Documents/Obsidian-Spirituality/Spirituality' },
+    { name = 'spirituality(linux)', path = '~/Documents/ObsidianVaultSpirituality/Spirituality' },
+    { name = 'main',                path = '~/Documents/Obsidian' },
+    { name = 'main(linux)',         path = '~/Documents/ObsidianVault/ServerNinja' },
+    { name = 'testing',             path = '~/Documents/Obsidian-Testing/Testing' },
   }
   local found = {}
   for _, c in ipairs(candidates) do

@@ -8,6 +8,21 @@ Versioning is [SemVer](https://semver.org/) applied to the environment as a
 whole: **major** for changes needing manual migration on each machine,
 **minor** for new tools or configs, **patch** for fixes that apply cleanly.
 
+## [Unreleased]
+
+### Fixed
+
+- obsidian.nvim showed as **disabled** in `:Lazy` on Linux machines. The
+  workspace list only held the macOS vault paths, and the spec is
+  `cond`-gated on at least one existing — so with no match the plugin
+  installed but never activated. Added the Linux vault paths
+  (`~/Documents/ObsidianVault/ServerNinja` and
+  `~/Documents/ObsidianVaultSpirituality/Spirituality`) alongside them.
+  Candidates that don't exist stay inert, so one list serves every machine.
+
+  Manual step: restart Neovim on the Linux box. No `:Lazy` action needed —
+  the plugin was already installed at the locked version.
+
 ## [1.2.0] - 2026-09-04
 
 ### Added
