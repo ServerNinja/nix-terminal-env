@@ -72,8 +72,12 @@ if command -v ${BREW_PREFIX}/bin/brew &> /dev/null; then
 
   # Use coreutils (installed via homebrew)
   PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
-  alias grep=ggrep
-  alias egrep=gegrep
+  if command -v ggrep &> /dev/null; then
+    alias grep=ggrep
+  fi
+  if command -v gegrep &> /dev/null; then
+    alias egrep=gegrep
+  fi
 else
   echo "ERROR: Please install homebrew"
 fi
