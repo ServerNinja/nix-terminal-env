@@ -40,11 +40,18 @@ return {
   cond = function() return #workspaces() > 0 end,
 
   -- Load when a note in a vault is opened, so link following and [[
-  -- completion are live while editing. The commands also load it on demand.
+  -- completion are live while editing.
   event = {
     'BufReadPre  ' .. vim.fn.expand('~') .. '/Documents/Obsidian*/**/*.md',
     'BufNewFile  ' .. vim.fn.expand('~') .. '/Documents/Obsidian*/**/*.md',
   },
+
+  -- Also load on first use of the command. Without this the <leader>m maps
+  -- that *find* a note (search, quick_switch, tags, new, today, dailies,
+  -- workspace) fail with E492 from a cold start, because they run `:Obsidian`
+  -- while no vault buffer has triggered the event above yet. Single entry:
+  -- legacy_commands = false leaves `Obsidian` as the only command.
+  cmd = 'Obsidian',
 
   dependencies = {
     'nvim-lua/plenary.nvim',

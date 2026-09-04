@@ -12,6 +12,15 @@ whole: **major** for changes needing manual migration on each machine,
 
 ### Fixed
 
+- obsidian.nvim's `<leader>m` keymaps that *find* a note (`ms` search, `mq`
+  quick-switch, `mt` tags, `mn` new, `md`/`mD` dailies, `mw` workspace) failed
+  with `E492: Not an editor command: Obsidian` from a cold start. The spec
+  lazy-loaded only on opening a file inside a vault, so the maps meant to get
+  you *into* a vault ran before the plugin — and its command — existed. Added
+  `cmd = 'Obsidian'` so first use of the command loads it. The in-note maps
+  (backlinks, rename, toc) were never affected, which is why this hid for a
+  while.
+
 - obsidian.nvim showed as **disabled** in `:Lazy` on Linux machines. The
   workspace list only held the macOS vault paths, and the spec is
   `cond`-gated on at least one existing — so with no match the plugin
