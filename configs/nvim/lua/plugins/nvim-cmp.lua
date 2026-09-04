@@ -9,6 +9,11 @@ return {
   -- cmdline gets no completion popup.
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
+    -- Registers the `nvim_lsp` source used below. Without this the source is
+    -- configured but never registered, and cmp silently drops it -- which is
+    -- why LSP completion (including obsidian.nvim's [[ and # tag completion,
+    -- served by its built-in obsidian-ls server) produced nothing.
+    "hrsh7th/cmp-nvim-lsp",
     -- source for file system paths
     "hrsh7th/cmp-path",
     {

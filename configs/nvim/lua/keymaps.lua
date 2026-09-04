@@ -37,6 +37,30 @@ keymap.set("n", "<leader>nl", "<C-w>l", { desc = "Window - Move right" }) -- win
 
 keymap.set('n', "<leader>nm", function() require('nvim-window').pick() end, {desc = "nvim-window: Jump to window"})
 
+-- Obsidian (notes vault). Uses the `Obsidian <subcommand>` form; the older
+-- ObsidianXxx commands are deprecated and removed in 4.0.
+-- Inside a note the plugin also provides <CR> (follow link / toggle checkbox)
+-- and ]o / [o on its own, buffer-locally.
+keymap.set('n', '<leader>ms', '<cmd>Obsidian search<cr>', { desc = "Search vault contents" })
+keymap.set('n', '<leader>mq', '<cmd>Obsidian quick_switch<cr>', { desc = "Quick switch note" })
+keymap.set('n', '<leader>mt', '<cmd>Obsidian tags<cr>', { desc = "Find notes by tag" })
+keymap.set('n', '<leader>mn', '<cmd>Obsidian new<cr>', { desc = "New note" })
+keymap.set('n', '<leader>md', '<cmd>Obsidian today<cr>', { desc = "Today's daily note" })
+keymap.set('n', '<leader>mD', '<cmd>Obsidian dailies<cr>', { desc = "Browse daily notes" })
+keymap.set('n', '<leader>mw', '<cmd>Obsidian workspace<cr>', { desc = "Switch vault" })
+-- These need to be run from inside a note
+keymap.set('n', '<leader>mb', '<cmd>Obsidian backlinks<cr>', { desc = "Backlinks to this note" })
+keymap.set('n', '<leader>mr', '<cmd>Obsidian rename<cr>', { desc = "Rename note, rewrite links" })
+keymap.set('n', '<leader>mo', '<cmd>Obsidian open<cr>', { desc = "Open note in Obsidian app" })
+keymap.set('n', '<leader>mp', '<cmd>Obsidian paste_img<cr>', { desc = "Paste image as attachment" })
+keymap.set('n', '<leader>mc', '<cmd>Obsidian toggle_checkbox<cr>', { desc = "Toggle checkbox" })
+keymap.set('n', '<leader>mL', '<cmd>Obsidian links<cr>', { desc = "List links in note" })
+keymap.set('n', '<leader>mT', '<cmd>Obsidian toc<cr>', { desc = "Table of contents" })
+-- Visual mode: these subcommands accept a range
+keymap.set('v', '<leader>ml', ':Obsidian link<cr>', { desc = "Link selection to a note" })
+keymap.set('v', '<leader>mL', ':Obsidian link_new<cr>', { desc = "Link selection to a new note" })
+keymap.set('v', '<leader>me', ':Obsidian extract_note<cr>', { desc = "Extract selection to new note" })
+
 -- Diffview (git diffs and file history)
 -- <cmd> strings keep these lazy-safe; the commands load the plugin on demand.
 keymap.set('n', '<leader>gd', '<cmd>DiffviewOpen<cr>', { desc = "Diff working tree vs HEAD" })

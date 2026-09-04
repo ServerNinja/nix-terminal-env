@@ -8,10 +8,39 @@ Versioning is [SemVer](https://semver.org/) applied to the environment as a
 whole: **major** for changes needing manual migration on each machine,
 **minor** for new tools or configs, **patch** for fixes that apply cleanly.
 
-## [Unreleased]
+## [1.2.0] - 2026-09-04
 
 ### Added
 
+- obsidian.nvim (the maintained `obsidian-nvim/` fork — the original
+  `epwalsh/` repo has been stale since 2026-04), for editing the Obsidian
+  vaults from Neovim. Keymaps under `<leader>m`:
+
+  | Key | Action |
+  |-----|--------|
+  | `<leader>ms` / `<leader>mq` | Search vault contents / quick-switch note |
+  | `<leader>mt` | Find notes by tag |
+  | `<leader>mn` | New note |
+  | `<leader>md` / `<leader>mD` | Today's daily note / browse dailies |
+  | `<leader>mw` | Switch vault |
+  | `<leader>mb` | Backlinks to this note |
+  | `<leader>mr` | Rename note, rewriting every inbound link |
+  | `<leader>mo` / `<leader>mp` | Open in the Obsidian app / paste image attachment |
+  | `<leader>mc` | Toggle checkbox |
+  | `<leader>mL` / `<leader>mT` | List links / table of contents |
+  | `<leader>ml`, `<leader>mL`, `<leader>me` (visual) | Link selection, link to new note, extract to new note |
+
+  Inside a note the plugin adds its own buffer-local `<CR>` (follow link or
+  toggle checkbox) and `]o`/`[o`, so those are left alone.
+
+  Vault paths are macOS-specific, so the workspace list is built from
+  directories that exist and the spec is `cond`-gated on finding at least
+  one — on a machine with no vaults it installs but never activates.
+
+  `[[` completion is served by the plugin's built-in `obsidian-ls` LSP
+  server, which gives the `nvim_lsp` source already listed in `nvim-cmp.lua`
+  something to talk to for the first time. `ui.enable = false` because this
+  config deliberately stops the markdown Tree-sitter highlighter.
 - Gitsigns keymaps, which the plugin also lacked entirely — it was drawing
   signs in the gutter and nothing more. Under a `<leader>h` (hunks) group,
   plus diff-mode-aware hunk navigation and a hunk text object:
@@ -77,6 +106,13 @@ whole: **major** for changes needing manual migration on each machine,
 
 ### Fixed
 
+- LSP completion could never work: `nvim-cmp.lua` configured a
+  `{ name = "nvim_lsp" }` source but `hrsh7th/cmp-nvim-lsp`, the plugin that
+  registers that source, was never in the dependency list — and nvim-cmp
+  silently drops sources it does not know. Found while wiring up
+  obsidian.nvim's `#` tag completion, which is served over LSP and so was
+  producing nothing. Adding the dependency also means real language servers
+  will work with no further wiring whenever they get added.
 - **Regression from 1.0.0**: inactive panes showed a near-white winbar.
   Changing lualine to `theme = 'auto'` in 1.0.0 made its palette derive from
   the colorscheme at setup time, which races auto-dark-mode applying that
@@ -94,6 +130,24 @@ whole: **major** for changes needing manual migration on each machine,
   not recover it. Its two recompute calls (`utils.highlight.reset_cache()` and
   `highlight.setup()`) now run once on `VimEnter`, after a colorscheme is
   guaranteed to be in place. Inactive buffers now match `TabLine` exactly.
+
+### Upgrading to 1.2.0
+
+```sh
+git pull && ./setup.sh
+```
+
+`setup.sh` installs the two new plugins from the updated `lazy-lock.json`
+(obsidian.nvim and cmp-nvim-lsp), then restart Neovim. Notes:
+
+- The Obsidian vault paths are macOS-specific. On a machine without them the
+  plugin installs but stays dormant, so nothing needs configuring there. To
+  use it elsewhere, add that machine's vault path to the candidate list in
+  `lua/plugins/obsidian.lua`.
+- Tag completion needs two characters after the `#` (`#al`, not `#a`).
+- New leader groups: `<leader>g` git diffs, `<leader>h` git hunks,
+  `<leader>m` Obsidian notes. `<leader>?` lists what is available in the
+  current buffer.
 
 ## [1.1.0] - 2026-09-03
 

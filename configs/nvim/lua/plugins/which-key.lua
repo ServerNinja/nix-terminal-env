@@ -39,6 +39,7 @@ return {
       { "<leader>f", group = "Find (Telescope)", icon = { icon = "", color = "yellow" } },
       { "<leader>h", group = "Git Hunks (Gitsigns)", icon = { icon = "", color = "orange" } },
       { "<leader>l", group = "Lazy"},
+      { "<leader>m", group = "Obsidian Notes", icon = { icon = "", color = "purple" } },
       { "<leader>n", group = "Window Navigation", icon = { icon = "", color = "azure" } },
       { "<leader>s", group = "Split", icon = { icon = "", color = "purple" } },
       { "<leader>t", group = "Tab Management", icon = { icon = "", color = "green" } },
