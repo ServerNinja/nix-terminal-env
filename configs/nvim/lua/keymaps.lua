@@ -37,6 +37,19 @@ keymap.set("n", "<leader>nl", "<C-w>l", { desc = "Window - Move right" }) -- win
 
 keymap.set('n', "<leader>nm", function() require('nvim-window').pick() end, {desc = "nvim-window: Jump to window"})
 
+-- Diffview (git diffs and file history)
+-- <cmd> strings keep these lazy-safe; the commands load the plugin on demand.
+keymap.set('n', '<leader>gd', '<cmd>DiffviewOpen<cr>', { desc = "Diff working tree vs HEAD" })
+keymap.set('n', '<leader>gc', '<cmd>DiffviewClose<cr>', { desc = "Close diffview" })
+keymap.set('n', '<leader>gf', '<cmd>DiffviewFileHistory %<cr>', { desc = "History of current file" })
+keymap.set('n', '<leader>gh', '<cmd>DiffviewFileHistory<cr>', { desc = "History of whole repo" })
+keymap.set('n', '<leader>gt', '<cmd>DiffviewToggleFiles<cr>', { desc = "Toggle file panel" })
+keymap.set('n', '<leader>gF', '<cmd>DiffviewFocusFiles<cr>', { desc = "Focus file panel" })
+keymap.set('n', '<leader>gr', '<cmd>DiffviewRefresh<cr>', { desc = "Refresh diffview" })
+-- Visual mode: ':' inserts the '<,'> range itself, and DiffviewFileHistory
+-- accepts a range, so this gives history for just the selected lines.
+keymap.set('v', '<leader>gf', ':DiffviewFileHistory<cr>', { desc = "History of selected lines" })
+
 -- Tab management / BarBar.nvim (Tab based buffer management and navigation)
 keymap.set('n', '<leader>th', '<Cmd>BufferPrevious<CR>', {desc = "Go to previous buffer"})
 keymap.set('n', '<leader>tl', '<Cmd>BufferNext<CR>', {desc = "Go to next buffer"})

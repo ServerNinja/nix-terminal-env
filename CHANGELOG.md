@@ -12,6 +12,39 @@ whole: **major** for changes needing manual migration on each machine,
 
 ### Added
 
+- Gitsigns keymaps, which the plugin also lacked entirely — it was drawing
+  signs in the gutter and nothing more. Under a `<leader>h` (hunks) group,
+  plus diff-mode-aware hunk navigation and a hunk text object:
+
+  | Key | Action |
+  |-----|--------|
+  | `]c` / `[c` | Next / previous hunk (falls back to native diff nav in diff buffers) |
+  | `<leader>hs` / `<leader>hr` | Stage / reset hunk (visual mode: selected lines) |
+  | `<leader>hS` / `<leader>hR` | Stage / reset whole buffer |
+  | `<leader>hu` | Undo stage hunk |
+  | `<leader>hp` | Preview hunk |
+  | `<leader>hb` / `<leader>hB` | Blame line / toggle inline blame |
+  | `<leader>hd` / `<leader>hD` | Diff against index / last commit |
+  | `<leader>hx` | Toggle deleted lines |
+  | `ih` | Hunk text object, so `dih` / `vih` work |
+
+  These are buffer-local via `on_attach`, not global in `lua/keymaps.lua`, so
+  they only exist in git-tracked buffers and `]c`/`[c` can defer to Neovim's
+  native diff navigation inside diffview.
+- Diffview keymaps under a `<leader>g` group, since the plugin previously had
+  none and was only reachable by typing `:Diffview…` commands:
+
+  | Key | Action |
+  |-----|--------|
+  | `<leader>gd` | Diff working tree vs HEAD |
+  | `<leader>gc` | Close diffview |
+  | `<leader>gf` | History of current file (visual mode: selected lines) |
+  | `<leader>gh` | History of whole repo |
+  | `<leader>gt` | Toggle file panel |
+  | `<leader>gF` | Focus file panel |
+  | `<leader>gr` | Refresh |
+
+  diffview.nvim now lazy-loads on its commands rather than at startup.
 - The project root is now shown at the bottom of the nvim-tree pane, via a
   lualine extension scoped to the `NvimTree` filetype. The tree is the
   leftmost full-height window, so its statusline lands on the screen's bottom

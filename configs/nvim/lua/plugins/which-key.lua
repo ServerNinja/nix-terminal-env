@@ -35,7 +35,9 @@ return {
     wk.add({
     -- group renames
       { "<leader>c", group = "Markdown Preview", icon = { icon = "", color = "orange" } },
+      { "<leader>g", group = "Git Diff (Diffview)", icon = { icon = "", color = "red" } },
       { "<leader>f", group = "Find (Telescope)", icon = { icon = "", color = "yellow" } },
+      { "<leader>h", group = "Git Hunks (Gitsigns)", icon = { icon = "", color = "orange" } },
       { "<leader>l", group = "Lazy"},
       { "<leader>n", group = "Window Navigation", icon = { icon = "", color = "azure" } },
       { "<leader>s", group = "Split", icon = { icon = "", color = "purple" } },
