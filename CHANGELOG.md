@@ -8,6 +8,60 @@ Versioning is [SemVer](https://semver.org/) applied to the environment as a
 whole: **major** for changes needing manual migration on each machine,
 **minor** for new tools or configs, **patch** for fixes that apply cleanly.
 
+## [Unreleased]
+
+### Added
+
+- The project root is now shown at the bottom of the nvim-tree pane, via a
+  lualine extension scoped to the `NvimTree` filetype. The tree is the
+  leftmost full-height window, so its statusline lands on the screen's bottom
+  edge — the one row colorful-winsep's separator floats never cover. Makes it
+  possible to tell apart several terminal windows each running nvim in a
+  different project. The path is shown `:~`-relative and truncated from the
+  left (`…/Obsidian-Spirituality/Spirituality`) so the project name always
+  survives in the 40-column tree.
+
+### Changed
+
+- Cut the per-pane file label back to mode, filename and cursor position, and
+  kept it in the winbar (the top row of each pane). `branch`, `diff` and
+  `diagnostics` on the left plus `encoding`, `fileformat` and `filetype` on
+  the right were squeezing the filename out of view in narrow splits.
+
+  The statusline is now explicitly empty, because it cannot be used here:
+  with `laststatus = 2` a window's statusline is drawn on the row immediately
+  below it, and colorful-winsep.nvim covers exactly that row with its
+  horizontal separator float. Measured in a stacked split — upper pane
+  occupies rows 1-37, so its statusline is row 38, and the separator float is
+  a 133-column-wide window at row 38. Only the bottom-most pane escapes,
+  since its statusline sits at the screen edge where no separator is drawn.
+  That is why a bottom label appeared on just one pane. Winbar rows (1 and
+  39 in the same layout) are never overlapped, so the label shows on every
+  pane in both stacked and side-by-side splits.
+
+  This also drops the pending-plugin-updates indicator that lived in the
+  winbar, so `:Lazy check` is now the only place available updates surface.
+
+### Fixed
+
+- **Regression from 1.0.0**: inactive panes showed a near-white winbar.
+  Changing lualine to `theme = 'auto'` in 1.0.0 made its palette derive from
+  the colorscheme at setup time, which races auto-dark-mode applying that
+  colorscheme. Losing the race left lualine on Neovim's built-in palette,
+  where `lualine_c_inactive` is `#888a91` on `#d7d9e1` — a white bar under
+  every inactive split. The previous hardcoded `dracula` theme was a fixed
+  palette and so was immune. lualine's own ColorScheme handler re-runs
+  `setup()` with the stored config, so that now runs once on `VimEnter`.
+  `lualine_c_inactive` is `#6c7086` on `#181825` again.
+- barbar's tabline ignored the colorscheme, rendering near-white text on grey
+  (Neovim's built-in defaults: `#e0e2ea` on `#4f5258`) instead of catppuccin.
+  barbar derives its highlights from the colorscheme when it sets up, and
+  nothing applied a colorscheme at startup — auto-dark-mode does it out of
+  band, after barbar has already computed. barbar's `ColorScheme` handler did
+  not recover it. Its two recompute calls (`utils.highlight.reset_cache()` and
+  `highlight.setup()`) now run once on `VimEnter`, after a colorscheme is
+  guaranteed to be in place. Inactive buffers now match `TabLine` exactly.
+
 ## [1.1.0] - 2026-09-03
 
 ### Fixed
