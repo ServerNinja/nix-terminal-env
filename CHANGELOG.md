@@ -20,8 +20,14 @@ whole: **major** for changes needing manual migration on each machine,
   `~/Documents/ObsidianVaultSpirituality/Spirituality`) alongside them.
   Candidates that don't exist stay inert, so one list serves every machine.
 
-  Manual step: restart Neovim on the Linux box. No `:Lazy` action needed —
-  the plugin was already installed at the locked version.
+  A vault keeps the **same workspace name** on every machine even though its
+  path differs, so `:Obsidian workspace main` means the same thing anywhere.
+
+  Manual step: **fully restart Neovim** on the Linux box — `cond` is
+  evaluated once while lazy.nvim builds its plugin list at startup, so an
+  already-open session keeps reporting the plugin as disabled no matter what
+  the file says. No `:Lazy` action needed; the plugin was already installed
+  at the locked version.
 
 ## [1.2.0] - 2026-09-04
 

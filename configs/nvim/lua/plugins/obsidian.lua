@@ -12,13 +12,18 @@
 
 -- Vault paths differ per machine, so only offer the ones that exist on this
 -- one. On a box with no vaults the plugin installs but never activates.
+--
+-- A vault deliberately keeps the same name on every machine even though its
+-- path differs, so `:Obsidian workspace main` means the same thing anywhere.
+-- Duplicate names are safe because only one path per name ever exists on a
+-- given box; if both did, obsidian.nvim would take the first match.
 local function workspaces()
   local candidates = {
-    { name = 'spirituality',        path = '~/Documents/Obsidian-Spirituality/Spirituality' },
-    { name = 'spirituality(linux)', path = '~/Documents/ObsidianVaultSpirituality/Spirituality' },
-    { name = 'main',                path = '~/Documents/Obsidian' },
-    { name = 'main(linux)',         path = '~/Documents/ObsidianVault/ServerNinja' },
-    { name = 'testing',             path = '~/Documents/Obsidian-Testing/Testing' },
+    { name = 'spirituality', path = '~/Documents/Obsidian-Spirituality/Spirituality' },
+    { name = 'spirituality', path = '~/Documents/ObsidianVaultSpirituality/Spirituality' },
+    { name = 'main',         path = '~/Documents/Obsidian' },
+    { name = 'main',         path = '~/Documents/ObsidianVault/ServerNinja' },
+    { name = 'testing',      path = '~/Documents/Obsidian-Testing/Testing' },
   }
   local found = {}
   for _, c in ipairs(candidates) do
