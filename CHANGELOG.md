@@ -12,6 +12,26 @@ whole: **major** for changes needing manual migration on each machine,
 
 ### Fixed
 
+- Deleting a line in an Obsidian note left ghost rows on screen until a
+  manual redraw. obsidian.nvim's **footer** (`{{backlinks}} {{properties}}
+  {{words}} {{chars}}`, on by default) draws `virt_lines` below the last
+  line — two of them, since `separator` defaults to an 80-dash rule — and
+  Neovim does not reliably invalidate that region when the buffer shrinks.
+  Using vim-markdown's regex syntax instead of Tree-sitter makes it worse,
+  because regex redraw is line-based and never touches the area below the
+  last line. Set `footer = { enabled = false }`.
+
+  Note `ui = { enable = false }` does **not** cover the footer; it is gated
+  separately. Disabling it also stops `b:obsidian_status` updating, so the
+  `statusline` option is inert — the footer module is the only thing that
+  starts it. Backlinks are still available on demand via `<leader>mb`.
+
+- obsidian.nvim did not load when opening a note in the **vault root**
+  (e.g. `~/Documents/Obsidian/README.md`). The lazy-load glob used only
+  `Obsidian*/**/*.md`, and `/**/` requires at least one intervening
+  directory, so root-level notes never matched and got no link following or
+  `[[` completion. Added the `Obsidian*/*.md` form alongside it.
+
 - obsidian.nvim's `<leader>m` keymaps that *find* a note (`ms` search, `mq`
   quick-switch, `mt` tags, `mn` new, `md`/`mD` dailies, `mw` workspace) failed
   with `E492: Not an editor command: Obsidian` from a cold start. The spec

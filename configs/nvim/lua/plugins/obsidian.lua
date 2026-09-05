@@ -41,9 +41,16 @@ return {
 
   -- Load when a note in a vault is opened, so link following and [[
   -- completion are live while editing.
+  --
+  -- Both globs are needed: `/**/` requires at least one intervening
+  -- directory, so it matches Vault/Sub/note.md but *not* a note sitting in
+  -- the vault root (e.g. ~/Documents/Obsidian/README.md). The `*/*.md` form
+  -- covers that case.
   event = {
     'BufReadPre  ' .. vim.fn.expand('~') .. '/Documents/Obsidian*/**/*.md',
     'BufNewFile  ' .. vim.fn.expand('~') .. '/Documents/Obsidian*/**/*.md',
+    'BufReadPre  ' .. vim.fn.expand('~') .. '/Documents/Obsidian*/*.md',
+    'BufNewFile  ' .. vim.fn.expand('~') .. '/Documents/Obsidian*/*.md',
   },
 
   -- Also load on first use of the command. Without this the <leader>m maps
@@ -71,6 +78,20 @@ return {
       -- the markdown Tree-sitter highlighter (see after/ftplugin/markdown.lua)
       -- and uses vim-markdown's regex syntax instead.
       ui = { enable = false },
+      -- The footer (backlinks/properties/words/chars below the last line) is
+      -- gated separately from `ui`, so the line above does not cover it. It
+      -- draws virt_lines -- two of them, since `separator` defaults to an
+      -- 80-dash rule -- and Neovim does not reliably invalidate the region
+      -- below the last line when the buffer shrinks, so deleting a line
+      -- leaves ghost rows until a manual redraw. Dropping Tree-sitter for
+      -- vim-markdown's regex syntax (see above) makes it worse, because
+      -- regex redraw is line-based and never touches that region.
+      --
+      -- Turning this off also stops `b:obsidian_status` from updating: the
+      -- footer module is the only thing that starts it (autocmds.lua gates
+      -- `footer.start()` on `footer.enabled`), so the `statusline` option is
+      -- inert without it. Backlinks remain available via <leader>mb.
+      footer = { enabled = false },
       -- Left at defaults. Tag completion needs two characters after the `#`
       -- (`#al`, not `#a`); setting completion.min_chars = 1 does not change
       -- that, because the tag search applies its own two-character floor.
