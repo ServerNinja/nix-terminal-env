@@ -33,3 +33,6 @@ font-size = 10.0
 background-opacity = 0.9
 background-blur = 10
 
+# Follow the macOS light/dark appearance with built-in Ghostty themes.
+theme = light:Flexoki Light,dark:Lavandula
+window-theme = system
