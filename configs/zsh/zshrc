@@ -233,3 +233,6 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 
 export PATH="$HOME/.local/bin:$PATH"
+
+# Spirituality instance of Ghostty with a distinct system-aware light/dark theme pair.
+alias ghostty-red='open -n -a Ghostty --args --theme="light:Violet Light,dark:Cyberpunk Scarlet Protocol" --title=Spirituality --window-save-state=never'
