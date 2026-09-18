@@ -17,6 +17,7 @@ brew "gnutls"
 brew "gnupg"
 brew "gnu-sed"
 brew "grep"
+brew "tesseract"
 
 # Getting fuzzy....
 brew "fzf"

@@ -16,6 +16,7 @@ brew "node"
 brew "wget"
 brew "curl"
 brew "jq"
+brew "tesseract"
 
 # Getting fuzzy....
 brew "fzf"
