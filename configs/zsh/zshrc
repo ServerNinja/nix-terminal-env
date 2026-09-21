@@ -54,6 +54,7 @@ autoload -U edit-command-line
 zle -N edit-command-line
 bindkey '^E' edit-command-line                   # Opens Vim to edit current command line
 
+
 # Search History
 bindkey '^R' history-incremental-search-backward # Perform backward search in command line history
 bindkey '^S' history-incremental-search-forward  # Perform forward search in command line history
@@ -65,6 +66,9 @@ setopt prompt_subst
 
 # Quit bitching about commnets, stupid ZSH!
 setopt interactivecomments
+
+# Spirituality instance of Ghostty with a distinct system-aware light/dark theme pair.
+alias ghostty-red='open -n -a Ghostty --args --theme="light:Violet Light,dark:Cyberpunk Scarlet Protocol" --title=Spirituality --window-save-state=never'
 
 # Homebrew
 if command -v ${BREW_PREFIX}/bin/brew &> /dev/null; then
@@ -80,6 +84,12 @@ if command -v ${BREW_PREFIX}/bin/brew &> /dev/null; then
   fi
 else
   echo "ERROR: Please install homebrew"
+fi
+
+# Codex Personal Profile
+if command -v codex >/dev/null 2>&1; then
+    [[ -d "$HOME/.codex-personal" ]] || mkdir -p "$HOME/.codex-personal"
+    alias codex-personal='CODEX_HOME="$HOME/.codex-personal" codex'
 fi
 
 # Terraform bypass
@@ -233,6 +243,3 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 
 export PATH="$HOME/.local/bin:$PATH"
-
-# Spirituality instance of Ghostty with a distinct system-aware light/dark theme pair.
-alias ghostty-red='open -n -a Ghostty --args --theme="light:Violet Light,dark:Cyberpunk Scarlet Protocol" --title=Spirituality --window-save-state=never'
