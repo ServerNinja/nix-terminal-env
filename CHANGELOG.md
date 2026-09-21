@@ -12,6 +12,16 @@ whole: **major** for changes needing manual migration on each machine,
 
 ### Fixed
 
+- Neovim rendered garbled text (missing characters mid-line) inside tmux.
+  `tmux.conf` set `default-terminal "${TERM}"`, inheriting `xterm-256color`
+  from the outer shell. This caused tmux to double-process nvim's escape
+  sequences (cursor positioning, attribute resets, etc.), silently dropping
+  characters. Fixed by hardcoding `default-terminal "tmux-256color"` — the
+  correct terminal type for processes running *inside* tmux — and adding an
+  `xterm-256color:Tc` override to pass RGB true-color through to the outer
+  terminal. `:e!` did not help because the file contents were correct; only
+  the rendering pipeline was broken.
+
 - Deleting a line in an Obsidian note left ghost rows on screen until a
   manual redraw. obsidian.nvim's **footer** (`{{backlinks}} {{properties}}
   {{words}} {{chars}}`, on by default) draws `virt_lines` below the last
