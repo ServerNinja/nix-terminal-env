@@ -227,10 +227,10 @@ check_figlet_fonts() {
     clone_or_update "https://github.com/xero/figlet-fonts" "$HOME/.local/share/figlet-fonts" "figlet-fonts"
 }
 
-check_tmux_tpm_plugin() {
-    log_info "Checking for tmux plugin manager"
-    mkdir -p "$HOME/.tmux/plugins"
-    clone_or_update "https://github.com/tmux-plugins/tpm" "$HOME/.tmux/plugins/tpm" "tpm"
+install_tmux_plugins() {
+    local plugin_dir="$HOME/.tmux/plugins"
+    clone_or_update "https://github.com/tmux-plugins/tpm" "$plugin_dir/tpm" "tpm" &&
+        clone_or_update "https://github.com/jimeh/tmux-themepack" "$plugin_dir/tmux-themepack" "tmux-themepack"
 }
 
 link_zsh_files() {
@@ -521,10 +521,16 @@ fi
 
 # Tmux
 if is_enabled "$SETUP_TMUX" && command -v tmux &> /dev/null; then
-    create_tmux_symlink
-    check_tmux_tpm_plugin
+    if create_tmux_symlink && install_tmux_plugins; then
+        if tmux list-sessions >/dev/null 2>&1; then
+            log_info "Reloading tmux configuration"
+            tmux source-file "$HOME/.tmux.conf" ||
+                log_warning "Could not reload tmux. Retry with: tmux source-file ~/.tmux.conf"
+        fi
+    else
+        log_warning "Could not set up tmux. Retry with: ./setup.sh"
+    fi
     check_powerlevel10k_config
-    log_warning "Please initialize tmux plugin manager by pressing 'prefix + I' in tmux..."
 fi
 
 # k9s

@@ -12,6 +12,9 @@ whole: **major** for changes needing manual migration on each machine,
 
 ### Fixed
 
+- `setup.sh` now installs the cyan Powerline theme alongside TPM and reloads
+  the configuration if tmux is running. Re-run `./setup.sh` to apply the fix.
+
 - Neovim rendered garbled text (missing characters mid-line) inside tmux.
   `tmux.conf` set `default-terminal "${TERM}"`, inheriting `xterm-256color`
   from the outer shell. This caused tmux to double-process nvim's escape

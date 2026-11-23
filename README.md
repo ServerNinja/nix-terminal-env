@@ -179,7 +179,8 @@ brew install deno
 `setup.sh` is safe to re-run at any time. On subsequent runs it:
 - Skips symlinks that are already correct
 - Replaces stale symlinks (e.g. after moving the repo)
-- Pulls updates for managed git repos (tpm, figlet-fonts, vim-tmux-navigator)
+- Pulls updates for managed git repos (tpm, tmux-themepack, figlet-fonts, vim-tmux-navigator)
+- Installs the tmux theme and reloads the configuration if tmux is running
 - Never overwrites your per-machine override files
 - Skips AI CLI installs when `codex`, `claude`, or `cursor-agent` is already on PATH
 - Skips the tfswitch install when `tfswitch` is already on PATH
